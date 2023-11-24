@@ -1,131 +1,193 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Location Tracker</title>
-    <style>
-      body {
-        background-color: black;
-        color: white;
-        font-family: Arial, sans-serif;
-        margin: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 100vh; 
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Location Tracker</title>
+  <style>
+    body {
+      background-color: black;
+      color: white;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      flex-direction: column; /* Added to stack elements vertically */
+    }
 
-      #getLocationBtn {
-        padding: 15px;
-        font-size: 18px;
-        cursor: pointer;
-        background-color: #333;
-        border: none;
-        color: white;
-        border-radius: 5px;
-        outline: none;
-      }
+    #getLocationBtn {
+      padding: 15px;
+      font-size: 18px;
+      cursor: pointer;
+      background-color: #333;
+      border: none;
+      color: white;
+      border-radius: 5px;
+      outline: none;
+    }
 
-      #locationInfo, #handleMotionInfo {
-        display: flex;
-        flex-direction: column;
-        text-align: left;
-        background-color: grey;
-        margin: 10px;
-        padding: 10px;
-        border-radius: 5px;
-      }
+    #locationInfo,
+    #handleMotionInfo {
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+      background-color: grey;
+      margin-top: 20px;
+      padding: 10px;
+      border-radius: 5px;
+    }
 
-      #notification {
-        position: fixed;
-        top: 20px;
-        text-align: center;
-        background-color: #88c78e;
-        padding: 10px;
-        border-radius: 5px;
-        display: none;
-      }
-    </style>
-  </head>
-  <body>
-    <button id="getLocationBtn">Get My Location</button>
-    <div id="locationInfo"></div>
-    <div id="handleMotionInfo"></div>
-    <div id="notification"></div>
+    #notification {
+      position: fixed;
+      top: 20px;
+      text-align: center;
+      background-color: #88c78e;
+      padding: 10px;
+      border-radius: 5px;
+      display: none;
+    }
 
-    <script>
-      function updateCoordinates(position) {
-        const latitude = position.coords.latitude;
-        const longitude = position.coords.longitude;
-    
-        const notification = document.getElementById("notification");
-        notification.textContent = "Location updated";
-        notification.style.display = "block";
-    
-        setTimeout(() => {
-          notification.style.display = "none";
-        }, 5000); // Display for 5 seconds
-    
-        const locationInfo = document.getElementById("locationInfo");
-        locationInfo.innerHTML = `<p>Latitude: ${latitude}</p><p>Longitude: ${longitude}</p>`;
-    
-        // Hide the button after the first click
-        document.getElementById("getLocationBtn").style.display = "none";
-      }
-  
+    #map {
+      height: 400px;
+      width: 100%;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <button id="getLocationBtn">Get My Location</button>
+  <div id="locationInfo"></div>
+  <div id="handleMotionInfo"></div>
+  <div id="notification"></div>
+  <div id="map"></div>
 
-      function handleMotion(event) {
-        const alpha = event.alpha.toFixed(3);
-        const beta = event.beta.toFixed(3);
-        const gamma = event.gamma.toFixed(3);
-    
+  <script>
+    let map, infoWindow;
 
-        const handleMotionInfo = document.getElementById("handleMotionInfo");
-        handleMotionInfo.innerHTML = `<p>Alpha: ${alpha}</p><p>Beta: ${beta}</p><p>Gamma: ${gamma}</p>`;
-      }
+    function initMap() {
+      map = new google.maps.Map(document.getElementById("map"), {
+        center: { lat: -34.397, lng: 150.644 },
+        zoom: 6,
+      });
+      infoWindow = new google.maps.InfoWindow();
 
-      function handleMotionPermission() {
-        if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-          DeviceOrientationEvent.requestPermission()
-            .then(permissionState => {
-              if (permissionState === 'granted') {
-                window.addEventListener('deviceorientation', handleMotion);
-              } else {
-                console.error('Permission denied for device orientation');
-              }
-            })
-            .catch(error => {
-              console.error('Error requesting device orientation permission:', error);
-            });
-        } else {
-          console.error('Device orientation permission API not supported');
-        }
-      }
+      const locationButton = document.createElement("button");
+      locationButton.textContent = "Pan to Current Location";
+      locationButton.classList.add("custom-map-control-button");
+      map.controls[google.maps.ControlPosition.TOP_CENTER].push(locationButton);
+      locationButton.addEventListener("click", () => {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              const pos = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude,
+              };
 
-      function handleError(error) {
-        console.error(`Error getting location: ${error.message}`);
-      }
-
-      document.getElementById('getLocationBtn').addEventListener('click', () => {
-        if ('geolocation' in navigator) {
-          const options = {
-            enableHighAccuracy: true,
-            timeout: 15000,
-          };
-
-          navigator.geolocation.watchPosition(
-            updateCoordinates,
-            handleError,
-            options
+              infoWindow.setPosition(pos);
+              infoWindow.setContent("Location found.");
+              infoWindow.open(map);
+              map.setCenter(pos);
+            },
+            () => {
+              handleLocationError(true, infoWindow, map.getCenter());
+            },
           );
-
-          // Request motion data permission
-          handleMotionPermission();
         } else {
-          console.error('Geolocation is not supported by your browser');
+          handleLocationError(false, infoWindow, map.getCenter());
         }
       });
-    </script>
-  </body>
+    }
+
+    function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+      infoWindow.setPosition(pos);
+      infoWindow.setContent(
+        browserHasGeolocation
+          ? "Error: The Geolocation service failed."
+          : "Error: Your browser doesn't support geolocation.",
+      );
+      infoWindow.open(map);
+    }
+
+    function updateCoordinates(position) {
+      const latitude = position.coords.latitude;
+      const longitude = position.coords.longitude;
+
+      const latLng = new google.maps.LatLng(latitude, longitude);
+
+      map.setCenter(latLng);
+      const marker = new google.maps.Marker({
+        position: latLng,
+        map: map,
+        title: "Current Location",
+      });
+
+      const notification = document.getElementById("notification");
+      notification.textContent = "Location updated";
+      notification.style.display = "block";
+
+      setTimeout(() => {
+        notification.style.display = "none";
+      }, 5000);
+
+      const locationInfo = document.getElementById("locationInfo");
+      locationInfo.innerHTML = `<p>Latitude: ${latitude}</p><p>Longitude: ${longitude}</p>`;
+
+      document.getElementById("getLocationBtn").style.display = "none";
+    }
+
+    function handleMotion(event) {
+      const alpha = event.alpha.toFixed(3);
+      const beta = event.beta.toFixed(3);
+      const gamma = event.gamma.toFixed(3);
+
+      const handleMotionInfo = document.getElementById("handleMotionInfo");
+      handleMotionInfo.innerHTML = `<p>Alpha: ${alpha}</p><p>Beta: ${beta}</p><p>Gamma: ${gamma}</p>`;
+    }
+
+    function handleMotionPermission() {
+      if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+        DeviceOrientationEvent.requestPermission()
+          .then(permissionState => {
+            if (permissionState === 'granted') {
+              window.addEventListener('deviceorientation', handleMotion);
+            } else {
+              console.error('Permission denied for device orientation');
+            }
+          })
+          .catch(error => {
+            console.error('Error requesting device orientation permission:', error);
+          });
+      } else {
+        console.error('Device orientation permission API not supported');
+      }
+    }
+
+    function handleError(error) {
+      console.error(`Error getting location: ${error.message}`);
+    }
+
+    document.getElementById('getLocationBtn').addEventListener('click', () => {
+      if ('geolocation' in navigator) {
+        const options = {
+          enableHighAccuracy: true,
+          timeout: 15000,
+        };
+
+        navigator.geolocation.watchPosition(
+          updateCoordinates,
+          handleError,
+          options
+        );
+
+        handleMotionPermission();
+      } else {
+        console.error('Geolocation is not supported by your browser');
+      }
+    });
+  </script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
+</body>
 </html>
