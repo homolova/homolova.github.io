@@ -14,7 +14,7 @@
       align-items: center;
       justify-content: center;
       height: 100vh;
-      flex-direction: column; /* Added to stack elements vertically */
+      flex-direction: column;
     }
 
     #getLocationBtn {
@@ -53,6 +53,7 @@
       height: 400px;
       width: 100%;
       margin-top: 20px;
+      display: none; /* Initially hide the map */
     }
   </style>
 </head>
@@ -136,6 +137,7 @@
       locationInfo.innerHTML = `<p>Latitude: ${latitude}</p><p>Longitude: ${longitude}</p>`;
 
       document.getElementById("getLocationBtn").style.display = "none";
+      document.getElementById("map").style.display = "block"; // Show the map after getting the location
     }
 
     function handleMotion(event) {
@@ -188,6 +190,19 @@
       }
     });
   </script>
-  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
+  <script>
+    // Function to load Google Maps script dynamically
+    function loadGoogleMapsScript() {
+      const script = document.createElement("script");
+      script.src = "https://maps.googleapis.com/maps/api/js?key=AIzaSyCMB5LAaC2WGPunFyZukGKYAtOulnnzpx4&callback=initMap";
+      script.async = true;
+      script.defer = true;
+      document.head.appendChild(script);
+    }
+
+    document.getElementById('getLocationBtn').addEventListener('click', () => {
+      loadGoogleMapsScript();
+    });
+  </script>
 </body>
 </html>
