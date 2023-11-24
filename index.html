@@ -52,36 +52,36 @@
       function updateCoordinates(position) {
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
-
+    
         const notification = document.getElementById("notification");
         notification.textContent = "Location updated";
         notification.style.display = "block";
-
+    
         setTimeout(() => {
           notification.style.display = "none";
         }, 5000); // Display for 5 seconds
-
+    
         const locationInfo = document.getElementById("locationInfo");
-        locationInfo.textContent = `Latitude: ${latitude}\nLongitude: ${longitude}`;
+        locationInfo.innerHTML = `<p>Latitude: ${latitude}</p><p>Longitude: ${longitude}</p>`;
         locationInfo.style.display = "block";
-
+    
         // Hide the button after the first click
         document.getElementById("getLocationBtn").style.display = "none";
       }
-
+    
       function handleMotion(event) {
         const alpha = event.alpha;
         const beta = event.beta;
         const gamma = event.gamma;
-
+    
         // Use alpha, beta, and gamma as needed for your application
         console.log(`Alpha: ${alpha}, Beta: ${beta}, Gamma: ${gamma}`);
       }
-
+    
       function handleError(error) {
         console.error(`Error getting location: ${error.message}`);
       }
-
+    
       document
         .getElementById("getLocationBtn")
         .addEventListener("click", () => {
@@ -90,13 +90,13 @@
               enableHighAccuracy: true,
               timeout: 15000, // 15 seconds
             };
-
+    
             navigator.geolocation.watchPosition(
               updateCoordinates,
               handleError,
               options
             );
-
+    
             // Check if DeviceMotionEvent is supported
             if ('ondeviceorientation' in window) {
               window.addEventListener('deviceorientation', handleMotion);
@@ -108,5 +108,6 @@
           }
         });
     </script>
+    
   </body>
 </html>
