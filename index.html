@@ -30,8 +30,8 @@
 
     #locationInfo,
     #handleMotionInfo {
-      display: flex;
-      flex-direction: column;
+      position: fixed;
+      top: 50px;
       text-align: left;
       background-color: grey;
       margin: 20px;
@@ -59,10 +59,10 @@
 </head>
 <body>
   <button id="getLocationBtn">Get My Location</button>
-  <div id="locationInfo"></div>
-  <div id="handleMotionInfo"></div>
-  <div id="notification"></div>
-  <div id="map"></div>
+  <div id="locationInfo" class = "column"></div>
+  <div id="handleMotionInfo" class = "column"></div>
+  <div id="notification" class = "column"></div>
+  <div id="map" class = "column"></div>
 
   <script>
     var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
