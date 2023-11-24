@@ -56,6 +56,8 @@
     }
 
     #map {
+      position: fixed;
+      top: 300px;
       height: 400px;
       width: 100%;
       margin-top: 20px;
@@ -124,6 +126,9 @@
 
       const latLng = new google.maps.LatLng(latitude, longitude);
 
+      const fixedPadding = "20px";
+      handleMotionInfo.style.padding = fixedPadding;
+
       map.setCenter(latLng);
       const marker = new google.maps.Marker({
         position: latLng,
@@ -154,7 +159,7 @@
 
       const fixedPadding = "20px";
       handleMotionInfo.style.padding = fixedPadding;
-      
+
       const handleMotionInfo = document.getElementById("handleMotionInfo");
       handleMotionInfo.innerHTML = isIOS
         ? `<p>Alpha: ${alpha}</p><p>Beta: ${beta}</p><p>Gamma: ${gamma}</p>`
