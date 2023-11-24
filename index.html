@@ -42,7 +42,7 @@
     
     #handleMotionInfo {
       position: fixed;      
-      top: 300px;
+      top: 200px;
     }
 
     #notification {
@@ -152,16 +152,9 @@
     } 
 
     function handleMotion(event) {
-      if (isIOS) {
       const alpha = event.alpha.toFixed(3);
       const beta = event.beta.toFixed(3);
       const gamma = event.gamma.toFixed(3);
-      }
-      else {
-      const alpha = event.rotationRate.alpha;
-      const beta = event.rotationRate.beta;
-      const gamma = event.rotationRate.gamma;
-      }
 
       const fixedPadding = "20px";
       handleMotionInfo.style.padding = fixedPadding;
