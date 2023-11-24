@@ -1,62 +1,112 @@
-
-function updateCoordinates(position) {
-  const latitude = position.coords.latitude;
-  const longitude = position.coords.longitude;
-
-  const notification = document.getElementById("notification");
-  notification.textContent = "Location updated";
-  notification.style.display = "block";
-
-  setTimeout(() => {
-    notification.style.display = "none";
-  }, 5000); // Display for 5 seconds
-
-  const locationInfo = document.getElementById("locationInfo");
-  locationInfo.textContent = `Latitude: ${latitude}, Longitude: ${longitude}`;
-  locationInfo.style.display = "block";
-
-  // Hide the button after the first click
-  document.getElementById("getLocationBtn").style.display = "none";
-}
-
-function handleMotion(event) {
-  const alpha = event.alpha;
-  const beta = event.beta;
-  const gamma = event.gamma;
-
-  // Use alpha, beta, and gamma as needed for your application
-  console.log(`Alpha: ${alpha}, Beta: ${beta}, Gamma: ${gamma}`);
-}
-
-function handleError(error) {
-  console.error(`Error getting location: ${error.message}`);
-}
-
-document
-  .getElementById("getLocationBtn")
-  .addEventListener("click", () => {
-    if ("geolocation" in navigator) {
-      const options = {
-        enableHighAccuracy: true,
-        timeout: 15000, // 15 seconds
-      };
-
-      navigator.geolocation.watchPosition(
-        updateCoordinates,
-        handleError,
-        options
-      );
-
-      // Check if DeviceMotionEvent is supported
-      if ('ondeviceorientation' in window) {
-        window.addEventListener('deviceorientation', handleMotion);
-      } else {
-        console.error("Device orientation is not supported by your browser");
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Location Tracker</title>
+    <style>
+      body {
+        background-color: black;
+        color: white;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
       }
-    } else {
-      console.error("Geolocation is not supported by your browser");
-    }
-  });
-</script>
-</body>
+
+      #getLocationBtn {
+        padding: 15px;
+        font-size: 18px;
+        cursor: pointer;
+        background-color: #333;
+        border: none;
+        color: white;
+        border-radius: 5px;
+        outline: none;
+      }
+
+      #locationInfo {
+        display: none;
+        text-align: center;
+      }
+
+      #notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background-color: #88c78e;
+        padding: 10px;
+        border-radius: 5px;
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <button id="getLocationBtn">Get My Location</button>
+    <div id="locationInfo"></div>
+    <div id="notification"></div>
+
+    <script>
+      function updateCoordinates(position) {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+
+        const notification = document.getElementById("notification");
+        notification.textContent = "Location updated";
+        notification.style.display = "block";
+
+        setTimeout(() => {
+          notification.style.display = "none";
+        }, 5000); // Display for 5 seconds
+
+        const locationInfo = document.getElementById("locationInfo");
+        locationInfo.textContent = `Latitude: ${latitude}, Longitude: ${longitude}`;
+        locationInfo.style.display = "block";
+
+        // Hide the button after the first click
+        document.getElementById("getLocationBtn").style.display = "none";
+      }
+
+      function handleMotion(event) {
+        const alpha = event.alpha;
+        const beta = event.beta;
+        const gamma = event.gamma;
+
+        // Use alpha, beta, and gamma as needed for your application
+        console.log(`Alpha: ${alpha}, Beta: ${beta}, Gamma: ${gamma}`);
+      }
+
+      function handleError(error) {
+        console.error(`Error getting location: ${error.message}`);
+      }
+
+      document
+        .getElementById("getLocationBtn")
+        .addEventListener("click", () => {
+          if ("geolocation" in navigator) {
+            const options = {
+              enableHighAccuracy: true,
+              timeout: 15000, // 15 seconds
+            };
+
+            navigator.geolocation.watchPosition(
+              updateCoordinates,
+              handleError,
+              options
+            );
+
+            // Check if DeviceMotionEvent is supported
+            if ('ondeviceorientation' in window) {
+              window.addEventListener('deviceorientation', handleMotion);
+            } else {
+              console.error("Device orientation is not supported by your browser");
+            }
+          } else {
+            console.error("Geolocation is not supported by your browser");
+          }
+        });
+    </script>
+  </body>
 </html>
