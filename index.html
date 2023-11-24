@@ -16,6 +16,7 @@
   <div id="coordinates">Latitude: 48.2157169<br>Longitude: 18.6231837</div>
 <div id="orientation"></div>
   <script>
+    console.log("funguje to?")
     function updateCoordinates(position) {
       const { latitude, longitude } = position.coords;
       const coordinatesElement = document.getElementById('coordinates');
