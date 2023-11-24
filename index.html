@@ -1,0 +1,58 @@
+User
+how to test if the phone is returning correct coordinates or if its even returning anything, add that to this code using flash 
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GPS and Orientation</title>
+  <style>
+    #coordinates {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>GPS and Orientation</h1>
+  <div id="coordinates"></div>
+<div id="orientation"></div>
+  <script>
+    function updateCoordinates(position) {
+      const { latitude, longitude } = position.coords;
+      const coordinatesElement = document.getElementById('coordinates');
+      coordinatesElement.innerHTML = `Latitude: ${latitude}<br>Longitude: ${longitude}`;
+    }
+
+    window.addEventListener('deviceorientation', handleOrientation);
+ 
+ function handleOrientation(event) {
+   var alpha = event.alpha; // Rotation around the z-axis
+   var beta = event.beta;   // Rotation around the x-axis
+   var gamma = event.gamma; // Rotation around the y-axis
+  
+   // Do something with the alpha, beta, and gamma values
+ }
+	  
+      const orientationElement = document.getElementById('orientation');
+      orientationElement.innerHTML = `alpha: ${alpha}<br>beta: ${beta}<br>gamma: ${gamma}`;
+	  
+
+    function handleError(error) {
+      console.error(`Error getting location: ${error.message}`);
+    }
+
+    if ('geolocation' in navigator) {
+      navigator.geolocation.watchPosition(updateCoordinates, handleError);
+    } else {
+      console.error('Geolocation is not supported by your browser');
+    }
+
+    if ('DeviceOrientationEvent' in window) {
+      window.addEventListener('deviceorientation', updateOrientation);
+    } else {
+      console.error('Device orientation is not supported by your browser');
+    }
+  </script>
+</body>
+</html>
