@@ -34,8 +34,8 @@
       flex-direction: column;
       text-align: left;
       background-color: grey;
-      margin-top: 20px;
-      padding: 10px;
+      margin: 20px;
+      padding: 0;
       border-radius: 5px;
     }
 
@@ -65,7 +65,7 @@
   <div id="map"></div>
 
   <script>
-    let map, infoWindow;
+    var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
     function initMap() {
       map = new google.maps.Map(document.getElementById("map"), {
@@ -138,7 +138,7 @@
 
       document.getElementById("getLocationBtn").style.display = "none";
       document.getElementById("map").style.display = "block";
-    }
+    } 
 
     function handleMotion(event) {
       const alpha = event.alpha.toFixed(3);
@@ -146,24 +146,52 @@
       const gamma = event.gamma.toFixed(3);
 
       const handleMotionInfo = document.getElementById("handleMotionInfo");
-      handleMotionInfo.innerHTML = `<p>Alpha: ${alpha}</p><p>Beta: ${beta}</p><p>Gamma: ${gamma}</p>`;
+      handleMotionInfo.innerHTML = isIOS
+        ? `<p>Alpha: ${alpha}</p><p>Beta: ${beta}</p><p>Gamma: ${gamma}</p>`
+        : `<p>Alpha (Android): ${alpha}</p><p>Beta (Android): ${beta}</p><p>Gamma (Android): ${gamma}</p>`;
     }
 
     function handleMotionPermission() {
-      if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-        DeviceOrientationEvent.requestPermission()
-          .then(permissionState => {
-            if (permissionState === 'granted') {
-              window.addEventListener('deviceorientation', handleMotion);
-            } else {
-              console.error('Permission denied for device orientation');
-            }
-          })
-          .catch(error => {
-            console.error('Error requesting device orientation permission:', error);
-          });
+      if (isIOS) {
+        if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+          DeviceOrientationEvent.requestPermission()
+            .then(permissionState => {
+              if (permissionState === 'granted') {
+                window.addEventListener('deviceorientation', handleMotion);
+              } else {
+                console.error('Permission denied for device orientation');
+              }
+            })
+            .catch(error => {
+              console.error('Error requesting device orientation permission:', error);
+            });
+        } else {
+          console.error('Device orientation permission API not supported');
+        }
       } else {
-        console.error('Device orientation permission API not supported');
+        // For Android, use the Permissions API
+        if ('permissions' in navigator) {
+          navigator.permissions.query({ name: 'accelerometer' })
+            .then(permission => {
+              if (permission.state === 'granted') {
+                window.addEventListener('deviceorientation', handleMotion);
+              } else {
+                return navigator.permissions.request({ name: 'accelerometer' });
+              }
+            })
+            .then(permissionStatus => {
+              if (permissionStatus.state === 'granted') {
+                window.addEventListener('deviceorientation', handleMotion);
+              } else {
+                console.error('Permission denied for device orientation');
+              }
+            })
+            .catch(error => {
+              console.error('Error checking or requesting device orientation permission:', error);
+            });
+        } else {
+          console.error('Device orientation permission not supported in this browser');
+        }
       }
     }
 
