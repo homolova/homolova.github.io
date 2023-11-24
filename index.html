@@ -22,19 +22,17 @@
       coordinatesElement.innerHTML = `Latitude: ${latitude}<br>Longitude: ${longitude}`;
     }
 
-    function updateOrientation(orientation) {
-      // You can use orientation data here if needed
-      // For example: orientation.alpha, orientation.beta, orientation.gamma
-	  
-	  const alpha = orientation.alpha;
-	  const beta = orientation.beta;
-	  const gamma = orientation.gamma;
-	  
-      const orientationElement = document.getElementById('orientation');
-      orientationElement.innerHTML = `alpha: ${alpha}<br>beta: ${beta}<br>gamma: ${gamma}`;
-	  
+    function handleOrientation(event) {
+    const alpha = event.alpha;
+    const beta = event.beta;
+    const gamma = event.gamma;
+
+    // Do something with the orientation angles
+    const orientationElement = document.getElementById('orientation');
+    orientationElement.innerHTML = `alpha: ${alpha}<br>beta: ${beta}<br>gamma: ${gamma}`;
     }
 
+	
     function handleError(error) {
       console.error(`Error getting location: ${error.message}`);
     }
@@ -46,7 +44,7 @@
     }
 
     if ('DeviceOrientationEvent' in window) {
-      window.addEventListener('deviceorientation', updateOrientation);
+      window.addEventListener('handleOrientation', handleError);
     } else {
       console.error('Device orientation is not supported by your browser');
     }
