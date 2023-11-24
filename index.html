@@ -1,75 +1,96 @@
 <!DOCTYPE html>
-<!-- saved from url=(0039)https://muses.esprit-bs.sk/m/navigator/ -->
-<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GPS and Orientation</title>
-  <style>
-    #coordinates {
-      margin-bottom: 10px;
-    }
-  </style>
-</head>
-<body data-new-gr-c-s-check-loaded="14.1141.0" data-gr-ext-installed="">
-  <h1>GPS and Orientation</h1>
-  <p>test aktualizácie 2</p>
-  <div id="coordinates">Latitude: 48.2157169<br>Longitude: 18.6231837</div>
-<div id="orientation"></div>
-  <script>
-    console.log("funguje to?")
-    function updateCoordinates(position) {
-      const { latitude, longitude } = position.coords;
-      const coordinatesElement = document.getElementById('coordinates');
-      coordinatesElement.innerHTML = `Latitude: ${latitude}<br>Longitude: ${longitude}`;
-    }
-
-    function handleOrientation(event) {
-    const alpha = event.alpha;
-    const beta = event.beta;
-    const gamma = event.gamma;
-
-    // Do something with the orientation angles
-    const orientationElement = document.getElementById('orientation');
-    orientationElement.innerHTML = `alpha: ${alpha}<br>beta: ${beta}<br>gamma: ${gamma}`;
-    }
-
-	
-    function handleError(error) {
-      console.error(`Error getting location: ${error.message}`);
-    }
-
-    if ('geolocation' in navigator) {
-      navigator.geolocation.watchPosition(updateCoordinates, handleError);
-    } else {
-      console.error('Geolocation is not supported by your browser');
-    }
-
-    if ('DeviceOrientationEvent' in window) {
-      window.addEventListener('handleOrientation', handleError);
-    } else {
-      console.error('Device orientation is not supported by your browser');
-    }
-  </script>
-
-
-</body><grammarly-desktop-integration data-grammarly-shadow-root="true"><template shadowrootmode="open"><style>
-      div.grammarly-desktop-integration {
-        position: absolute;
-        width: 1px;
-        height: 1px;
-        padding: 0;
-        margin: -1px;
-        overflow: hidden;
-        clip: rect(0, 0, 0, 0);
-        white-space: nowrap;
-        border: 0;
-        -moz-user-select: none;
-        -webkit-user-select: none;
-        -ms-user-select:none;
-        user-select:none;
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Location Tracker</title>
+    <style>
+      body {
+        background-color: black;
+        color: white;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
       }
 
-      div.grammarly-desktop-integration:before {
-        content: attr(data-content);
+      #getLocationBtn {
+        padding: 15px;
+        font-size: 18px;
+        cursor: pointer;
+        background-color: #333;
+        border: none;
+        color: white;
+        border-radius: 5px;
+        outline: none;
       }
-    </style><div aria-label="grammarly-integration" role="group" tabindex="-1" class="grammarly-desktop-integration" data-content="{&quot;mode&quot;:&quot;full&quot;,&quot;isActive&quot;:true,&quot;isUserDisabled&quot;:false}"></div></template></grammarly-desktop-integration></html>
+
+      #locationInfo {
+        display: none;
+        text-align: center;
+      }
+
+      #notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background-color: #88c78e;
+        padding: 10px;
+        border-radius: 5px;
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <button id="getLocationBtn">Get My Location</button>
+    <div id="locationInfo"></div>
+    <div id="notification"></div>
+
+    <script>
+      function updateCoordinates(position) {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+
+        const notification = document.getElementById("notification");
+        notification.textContent = "Location updated";
+        notification.style.display = "block";
+
+        setTimeout(() => {
+          notification.style.display = "none";
+        }, 5000); // Display for 5 seconds
+
+        const locationInfo = document.getElementById("locationInfo");
+        locationInfo.textContent = `Latitude: ${latitude}, Longitude: ${longitude}`;
+        locationInfo.style.display = "block";
+
+        // Hide the button after the first click
+        document.getElementById("getLocationBtn").style.display = "none";
+      }
+
+      function handleError(error) {
+        console.error(`Error getting location: ${error.message}`);
+      }
+
+      document
+        .getElementById("getLocationBtn")
+        .addEventListener("click", () => {
+          if ("geolocation" in navigator) {
+            const options = {
+              enableHighAccuracy: true,
+              timeout: 15000, // 15 seconds
+            };
+
+            navigator.geolocation.watchPosition(
+              updateCoordinates,
+              handleError,
+              options
+            );
+          } else {
+            console.error("Geolocation is not supported by your browser");
+          }
+        });
+    </script>
+  </body>
+</html>
