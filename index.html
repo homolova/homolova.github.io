@@ -27,7 +27,7 @@
         outline: none;
       }
 
-      #locationInfo, #orientationInfo {
+      #locationInfo, #handleMotionInfo {
         display: none;
         text-align: center;
       }
@@ -46,16 +46,40 @@
   <body>
     <button id="getLocationBtn">Get My Location</button>
     <div id="locationInfo"></div>
-    <div id="orientationInfo"></div>
+    <div id="handleMotionInfo"></div>
     <div id="notification"></div>
 
     <script>
       function updateCoordinates(position) {
-        // (Your existing geolocation code remains unchanged)
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+    
+        const notification = document.getElementById("notification");
+        notification.textContent = "Location updated";
+        notification.style.display = "block";
+    
+        setTimeout(() => {
+          notification.style.display = "none";
+        }, 5000); // Display for 5 seconds
+    
+        const locationInfo = document.getElementById("locationInfo");
+        locationInfo.innerHTML = `<p>Latitude: ${latitude}</p><p>Longitude: ${longitude}</p>`;
+        locationInfo.style.display = "block";
+    
+        // Hide the button after the first click
+        document.getElementById("getLocationBtn").style.display = "none";
       }
+  
 
       function handleMotion(event) {
-        // (Your existing device orientation code remains unchanged)
+        const alpha = event.alpha;
+        const beta = event.beta;
+        const gamma = event.gamma;
+    
+
+        const handleMotionInfo = document.getElementById("handleMotionInfo");
+        handleMotionInfo.innerHTML = `<p>Alpha: ${alpha}</p><p>Beta: ${beta}}</p><p>Gamma: ${gamma}</p>`;
+        handleMotionInfo.style.display = "block";
       }
 
       function handleMotionPermission() {
