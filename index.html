@@ -53,7 +53,7 @@
       height: 400px;
       width: 100%;
       margin-top: 20px;
-      display: none; /* Initially hide the map */
+      display: none;
     }
   </style>
 </head>
@@ -70,7 +70,7 @@
     function initMap() {
       map = new google.maps.Map(document.getElementById("map"), {
         center: { lat: -34.397, lng: 150.644 },
-        zoom: 18,
+        zoom: 12, // Adjust the zoom level as needed
       });
       infoWindow = new google.maps.InfoWindow();
 
@@ -137,7 +137,7 @@
       locationInfo.innerHTML = `<p>Latitude: ${latitude}</p><p>Longitude: ${longitude}</p>`;
 
       document.getElementById("getLocationBtn").style.display = "none";
-      document.getElementById("map").style.display = "block"; // Show the map after getting the location
+      document.getElementById("map").style.display = "block";
     }
 
     function handleMotion(event) {
@@ -191,10 +191,9 @@
     });
   </script>
   <script>
-    // Function to load Google Maps script dynamically
     function loadGoogleMapsScript() {
       const script = document.createElement("script");
-      script.src = "https://maps.googleapis.com/maps/api/js?key=AIzaSyCMB5LAaC2WGPunFyZukGKYAtOulnnzpx4&callback=initMap";
+      script.src = "https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap";
       script.async = true;
       script.defer = true;
       document.head.appendChild(script);
