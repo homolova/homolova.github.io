@@ -13,7 +13,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        height: 100vh; 
+        height: 100vh;
       }
 
       #getLocationBtn {
@@ -33,6 +33,8 @@
         flex-direction: column; /* Display in a column */
         text-align: left; /* Align content to the left */
         background-color: grey;
+        width: 100%; /* Set width to 100% to take up the full width */
+        padding: 10px; /* Add padding for better visibility */
       }
 
       #notification {
@@ -56,28 +58,26 @@
       function updateCoordinates(position) {
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
-    
+
         const notification = document.getElementById("notification");
         notification.textContent = "Location updated";
         notification.style.display = "block";
-    
+
         setTimeout(() => {
           notification.style.display = "none";
         }, 5000); // Display for 5 seconds
-    
+
         const locationInfo = document.getElementById("locationInfo");
         locationInfo.innerHTML = `<p>Latitude: ${latitude}</p><p>Longitude: ${longitude}</p>`;
-    
+
         // Hide the button after the first click
         document.getElementById("getLocationBtn").style.display = "none";
       }
-  
 
       function handleMotion(event) {
         const alpha = event.alpha.toFixed(3);
         const beta = event.beta.toFixed(3);
         const gamma = event.gamma.toFixed(3);
-    
 
         const handleMotionInfo = document.getElementById("handleMotionInfo");
         handleMotionInfo.innerHTML = `<p>Alpha: ${alpha}</p><p>Beta: ${beta}</p><p>Gamma: ${gamma}</p>`;
