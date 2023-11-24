@@ -62,7 +62,7 @@
     function initMap() {
       map = new google.maps.Map(document.getElementById("map"), {
         center: { lat: -34.397, lng: 150.644 },
-        zoom: 18, // Adjust the zoom level as needed
+        zoom: 18,
       });
       infoWindow = new google.maps.InfoWindow();
 
@@ -117,12 +117,9 @@
       if (window.DeviceOrientationEvent) {
         window.addEventListener('deviceorientation', function (event) {
           var alpha = null;
-          // Check for iOS property
           if (event.webkitCompassHeading) {
             alpha = event.webkitCompassHeading;
-          }
-          // Non-iOS
-          else {
+          } else {
             alpha = event.alpha;
           }
           var locationIcon = myLocationMarker.get('icon');
@@ -208,18 +205,12 @@
       script.defer = true;
       document.head.appendChild(script);
     }
-
+  </script>
+  <script>
     document.getElementById('getLocationBtn').addEventListener('click', () => {
       loadGoogleMapsScript();
-      addUserLocation(); // Call addUserLocation when the button is clicked
+      addUserLocation();
     });
   </script>
-</head>
-<body>
-  <button id="getLocationBtn">Get My Location</button>
-  <div id="locationInfo"></div>
-  <div id="handleMotionInfo"></div>
-  <div id="notification"></div>
-  <div id="map"></div>
 </body>
 </html>
