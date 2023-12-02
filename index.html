@@ -67,10 +67,10 @@
 </head>
 <body>
   <button id="getLocationBtn">Get My Location</button>
-  <div id="locationInfo" class = "column"></div>
-  <div id="handleMotionInfo" class = "column"></div>
-  <div id="notification" class = "column"></div>
-  <div id="map" class = "column"></div>
+  <div id="locationInfo" class="column"></div>
+  <div id="handleMotionInfo" class="column"></div>
+  <div id="notification" class="column"></div>
+  <div id="map" class="column"></div>
 
   <script>
     var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
@@ -159,8 +159,7 @@
       const fixedPadding = "20px";
       handleMotionInfo.style.padding = fixedPadding;
 
-      const handleMotionInfo = document.getElementById("handleMotionInfo");
-      handleMotionInfo.innerHTML = `<p>Alpha: ${alpha}</p><p>Beta: ${beta}</p><p>Gamma: ${gamma}</p>`
+      handleMotionInfo.innerHTML = `<p>Alpha: ${alpha}</p><p>Beta: ${beta}</p><p>Gamma: ${gamma}</p>`;
     }
 
     function handleMotionPermission() {
@@ -224,13 +223,16 @@
           options
         );
 
+        // Load Google Maps script first
+        loadGoogleMapsScript();
+
+        // Then handle motion permission
         handleMotionPermission();
       } else {
         console.error('Geolocation is not supported by your browser');
       }
     });
-  </script>
-  <script>
+
     function loadGoogleMapsScript() {
       const script = document.createElement("script");
       script.src = "https://maps.googleapis.com/maps/api/js?key=AIzaSyCMB5LAaC2WGPunFyZukGKYAtOulnnzpx4&callback=initMap";
@@ -238,10 +240,6 @@
       script.defer = true;
       document.head.appendChild(script);
     }
-
-    document.getElementById('getLocationBtn').addEventListener('click', () => {
-      loadGoogleMapsScript();
-    });
   </script>
 </body>
 </html>
