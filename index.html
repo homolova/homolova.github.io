@@ -178,7 +178,23 @@
       } else if (!isIOS) {
         // For Android devices or other platforms, check if the event is supported
         if ('DeviceOrientationEvent' in window) {
-          window.addEventListener('deviceorientation', handleMotion);
+          // Request permission for accelerometer and gyroscope for Android
+          if (typeof DeviceMotionEvent.requestPermission === 'function') {
+            DeviceMotionEvent.requestPermission()
+              .then(permissionState => {
+                if (permissionState === 'granted') {
+                  window.addEventListener('deviceorientation', handleMotion);
+                } else {
+                  console.error('Permission denied for device motion');
+                }
+              })
+              .catch(error => {
+                console.error('Error requesting device motion permission:', error);
+              });
+          } else {
+            // No explicit permission needed for device orientation
+            window.addEventListener('deviceorientation', handleMotion);
+          }
         } else {
           console.error('Device orientation not supported on this platform');
         }
