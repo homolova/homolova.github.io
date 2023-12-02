@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Location Tracker</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
   integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
@@ -20,36 +20,24 @@
       flex-direction: column;
     }
 
-    #getLocationBtn {
-      padding: 15px;
-      font-size: 18px;
-      cursor: pointer;
-      background-color: #333;
-      border: none;
-      color: white;
-      border-radius: 5px;
-      outline: none;
-    }
-
     #locationInfo,
-    #handleMotionInfo {
+    #handleMotionInfo,
+    #notification {
       text-align: left;
       background-color: grey;
       border-radius: 5px;
+      position: fixed;
     }
 
     #locationInfo {
-      position: fixed;
       top: 50px;
     }
 
     #handleMotionInfo {
-      position: fixed;
       top: 150px;
     }
 
     #notification {
-      position: fixed;
       top: 20px;
       text-align: center;
       background-color: #ef9013;
@@ -62,14 +50,12 @@
       position: fixed;
       top: 300px;
       height: 400px;
-      width: 100%;
+      width: 600px;
       margin-top: 20px;
-      display: none;
     }
   </style>
 </head>
 <body>
-  <button id="getLocationBtn">Get My Location</button>
   <div id="locationInfo" class="column"></div>
   <div id="handleMotionInfo" class="column"></div>
   <div id="notification" class="column"></div>
@@ -95,45 +81,40 @@
         fillOpacity: 0.6,
       }).addTo(map);
 
-      const locationButton = document.getElementById("getLocationBtn");
-      locationButton.addEventListener("click", () => {
-        if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(
-            (position) => {
-              const lat = position.coords.latitude;
-              const lng = position.coords.longitude;
+      // Watch the geolocation and update the marker
+      if (navigator.geolocation) {
+        navigator.geolocation.watchPosition(
+          (position) => {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
 
-              // Update marker position
-              marker.setLatLng([lat, lng]);
+            // Update marker position
+            marker.setLatLng([lat, lng]);
 
-              // Update map view
-              map.setView([lat, lng], 18);
+            // Update map view
+            map.setView([lat, lng], 18);
 
-              const locationInfo = document.getElementById("locationInfo");
-              locationInfo.innerHTML = `<p>Latitude: ${lat}</p><p>Longitude: ${lng}</p>`;
+            const locationInfo = document.getElementById("locationInfo");
+            locationInfo.innerHTML = `<p>Latitude: ${lat}</p><p>Longitude: ${lng}</p>`;
 
-              const notification = document.getElementById("notification");
-              notification.textContent = "Location updated";
-              notification.style.display = "block";
+            const notification = document.getElementById("notification");
+            notification.textContent = "Location updated";
+            notification.style.display = "block";
 
-              setTimeout(() => {
-                notification.style.display = "none";
-              }, 5000);
+            setTimeout(() => {
+              notification.style.display = "none";
+            }, 5000);
 
-              document.getElementById("getLocationBtn").style.display = "none";
-              document.getElementById("map").style.display = "block";
-
-              // Now that we have geolocation, start listening to device orientation
-              handleMotionPermission();
-            },
-            () => {
-              handleLocationError(true);
-            },
-          );
-        } else {
-          handleLocationError(false);
-        }
-      });
+            // Now that we have geolocation, start listening to device orientation
+            handleMotionPermission();
+          },
+          (error) => {
+            handleLocationError(true);
+          },
+        );
+      } else {
+        handleLocationError(false);
+      }
     }
 
     // Adding a delay before initializing the map
