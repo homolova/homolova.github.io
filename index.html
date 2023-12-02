@@ -20,36 +20,24 @@
       flex-direction: column;
     }
 
-    #getLocationBtn {
-      padding: 15px;
-      font-size: 18px;
-      cursor: pointer;
-      background-color: #333;
-      border: none;
-      color: white;
-      border-radius: 5px;
-      outline: none;
-    }
-
     #locationInfo,
-    #handleMotionInfo {
+    #handleMotionInfo,
+    #notification {
       text-align: left;
       background-color: grey;
       border-radius: 5px;
+      position: fixed;
     }
 
     #locationInfo {
-      position: fixed;
       top: 50px;
     }
 
     #handleMotionInfo {
-      position: fixed;
       top: 150px;
     }
 
     #notification {
-      position: fixed;
       top: 20px;
       text-align: center;
       background-color: #ef9013;
@@ -64,28 +52,14 @@
       height: 400px;
       width: 600px;
       margin-top: 20px;
-      display: none;
-    }
-
-    .error-message {
-      position: fixed;
-      top: 250px;
-      text-align: center;
-      background-color: #ff0000;
-      padding: 10px;
-      border-radius: 5px;
-      width: 100%;
-      display: none;
     }
   </style>
 </head>
 <body>
-  <button id="getLocationBtn">Get My Location</button>
   <div id="locationInfo" class="column"></div>
   <div id="handleMotionInfo" class="column"></div>
   <div id="notification" class="column"></div>
   <div id="map" class="column"></div>
-  <div id="error-message" class="error-message"></div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
   integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
@@ -135,13 +109,8 @@
             handleMotionPermission();
           },
           (error) => {
-            handleLocationError(true, error);
+            handleLocationError(true);
           },
-          {
-            enableHighAccuracy: true, // Use high accuracy if available
-            maximumAge: 30000, // Maximum age of a cached position
-            timeout: 27000, // Maximum time to wait for location data
-          }
         );
       } else {
         handleLocationError(false);
@@ -151,28 +120,33 @@
     // Adding a delay before initializing the map
     setTimeout(initMap, 500);
 
-    function handleLocationError(browserHasGeolocation, error) {
+    function handleLocationError(browserHasGeolocation) {
       const locationInfo = document.getElementById("locationInfo");
       locationInfo.innerHTML = `<p>Location not available</p>`;
 
       const notification = document.getElementById("notification");
       notification.textContent = browserHasGeolocation
-        ? `Error: The Geolocation service failed. ${error.message}`
+        ? "Error: The Geolocation service failed."
         : "Error: Your browser doesn't support geolocation.";
       notification.style.display = "block";
-
-      // Show error message on the page
-      const errorMessage = document.getElementById("error-message");
-      errorMessage.textContent = browserHasGeolocation
-        ? `Error: The Geolocation service failed. ${error.message}`
-        : "Error: Your browser doesn't support geolocation.";
-      errorMessage.style.display = "block";
     }
 
     function handleMotion(event) {
-      const alpha = event.alpha.toFixed(3);
-      const beta = event.beta.toFixed(3);
-      const gamma = event.gamma.toFixed(3);
+      let alpha, beta, gamma;
+
+      if (iOS()) {
+        // Handling for Apple devices
+        alpha = event.webkitCompassHeading !== undefined
+          ? event.webkitCompassHeading.toFixed(3)
+          : event.alpha.toFixed(3);
+        beta = event.beta.toFixed(3);
+        gamma = event.gamma.toFixed(3);
+      } else {
+        // Handling for non-Apple devices (Android, etc.)
+        alpha = event.alpha.toFixed(3);
+        beta = event.beta.toFixed(3);
+        gamma = event.gamma.toFixed(3);
+      }
 
       const handleMotionInfo = document.getElementById("handleMotionInfo");
       handleMotionInfo.innerHTML = `<p>Alpha: ${alpha}</p><p>Beta: ${beta}</p><p>Gamma: ${gamma}</p>`;
@@ -185,22 +159,28 @@
             if (permissionState === 'granted') {
               window.addEventListener('deviceorientation', handleMotion);
             } else {
-              handleOrientationError('Permission denied for device orientation');
+              console.error('Permission denied for device orientation');
             }
           })
           .catch(error => {
-            handleOrientationError(`Error requesting device orientation permission: ${error}`);
+            console.error('Error requesting device orientation permission:', error);
           });
       } else {
-        handleOrientationError('Device orientation permission API not supported');
+        console.error('Device orientation permission API not supported');
       }
     }
 
-    function handleOrientationError(error) {
-      // Show error message on the page
-      const errorMessage = document.getElementById("error-message");
-      errorMessage.textContent = `Orientation Error: ${error}`;
-      errorMessage.style.display = "block";
+    function iOS() {
+      return [
+        'iPad Simulator',
+        'iPhone Simulator',
+        'iPod Simulator',
+        'iPad',
+        'iPhone',
+        'iPod'
+      ].includes(navigator.platform)
+      // iPad on iOS 13 detection
+      || (navigator.userAgent.includes("Mac") && "ontouchend" in document);
     }
   </script>
 </body>
