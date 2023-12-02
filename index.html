@@ -42,8 +42,7 @@
     }
 
     #deviceInfo {
-      top: 10px;
-      left: 10px;
+      top: 300px;
     }
 
 
@@ -58,7 +57,7 @@
 
     #map {
       position: fixed;
-      top: 300px;
+      top: 400px;
       height: 400px;
       width: 600px;
       margin-top: 20px;
@@ -183,13 +182,11 @@
 
 
     if (iOS()) {
-      var elem = document.createElement("img");
-      elem.setAttribute("src", "http://img.zohostatic.com/discussions/v1/images/defaultPhoto.png");
-      elem.setAttribute("height", "20");
-      elem.setAttribute("width", "20");
-      document.getElementById("deviceInfo").appendChild(elem);
+      const deviceInfo = document.getElementById("deviceInfo");
+      deviceInfo.innerHTML = `<p>Apple device detected</p>`;
       } else {
-
+      const deviceInfo = document.getElementById("deviceInfo");
+      deviceInfo.innerHTML = `<p>Android device detected</p>`;
       }
 
     function iOS() {
