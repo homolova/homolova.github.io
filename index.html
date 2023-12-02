@@ -45,7 +45,6 @@
       top: 290px;
     }
 
-
     #notification {
       top: 20px;
       text-align: center;
@@ -107,7 +106,6 @@
             const locationInfo = document.getElementById("locationInfo");
             locationInfo.innerHTML = `<p>Latitude: ${lat}</p><p>Longitude: ${lng}</p>`;
 
-
             const notification = document.getElementById("notification");
             notification.textContent = "Location updated";
             notification.style.display = "block";
@@ -150,7 +148,6 @@
         alpha = event.alpha.toFixed(3);
         beta = event.beta.toFixed(3);
         gamma = event.gamma.toFixed(3);
-
       } else {
         // For non-Apple devices, use webkitCompassHeading
         alpha = event.webkitCompassHeading !== null ? event.webkitCompassHeading.toFixed(3) : "Not supported";
@@ -163,7 +160,10 @@
     }
 
     function handleMotionPermission() {
-      if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+      const isIOS = iOS();
+
+      if (isIOS && typeof DeviceOrientationEvent.requestPermission === 'function') {
+        // For iOS devices, use requestPermission
         DeviceOrientationEvent.requestPermission()
           .then(permissionState => {
             if (permissionState === 'granted') {
@@ -175,19 +175,25 @@
           .catch(error => {
             console.error('Error requesting device orientation permission:', error);
           });
+      } else if (!isIOS) {
+        // For Android devices or other platforms, check if the event is supported
+        if ('DeviceOrientationEvent' in window) {
+          window.addEventListener('deviceorientation', handleMotion);
+        } else {
+          console.error('Device orientation not supported on this platform');
+        }
       } else {
         console.error('Device orientation permission API not supported');
       }
     }
 
-
     if (iOS()) {
       const deviceInfo = document.getElementById("deviceInfo");
       deviceInfo.innerHTML = `<p>Apple device detected</p>`;
-      } else {
+    } else {
       const deviceInfo = document.getElementById("deviceInfo");
       deviceInfo.innerHTML = `<p>Android device detected</p>`;
-      }
+    }
 
     function iOS() {
       return [
