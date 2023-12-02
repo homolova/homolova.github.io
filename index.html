@@ -22,7 +22,10 @@
 
     #locationInfo,
     #handleMotionInfo,
+    #deviceInfo,
     #notification {
+      padding-left: 10px;
+      padding-right: 10px;
       text-align: left;
       background-color: grey;
       border-radius: 5px;
@@ -36,6 +39,11 @@
     #handleMotionInfo {
       top: 150px;
     }
+
+    #deviceInfo {
+      top: 250px;
+    }
+
 
     #notification {
       top: 20px;
@@ -97,6 +105,7 @@
             const locationInfo = document.getElementById("locationInfo");
             locationInfo.innerHTML = `<p>Latitude: ${lat}</p><p>Longitude: ${lng}</p>`;
 
+
             const notification = document.getElementById("notification");
             notification.textContent = "Location updated";
             notification.style.display = "block";
@@ -136,13 +145,11 @@
 
       if (iOS()) {
         // For Apple devices, use the original handling
-        handleMotionInfo.innerHTML = `<p>Apple device detected</p>`;
         alpha = event.alpha.toFixed(3);
         beta = event.beta.toFixed(3);
         gamma = event.gamma.toFixed(3);
       } else {
         // For non-Apple devices, use webkitCompassHeading
-        handleMotionInfo.innerHTML = `<p>Android device detected</p>`;
         alpha = event.webkitCompassHeading !== null ? event.webkitCompassHeading.toFixed(3) : "Not supported";
         beta = event.webkitBeta !== null ? event.webkitBeta.toFixed(3) : "Not supported";
         gamma = event.webkitGamma !== null ? event.webkitGamma.toFixed(3) : "Not supported";
