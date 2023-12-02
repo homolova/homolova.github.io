@@ -49,7 +49,7 @@
       position: fixed;
       top: 20px;
       text-align: center;
-      background-color: #2def13;
+      background-color: #ef9013;
       padding: 10px;
       border-radius: 5px;
       display: none;
@@ -217,17 +217,17 @@
           timeout: 15000,
         };
 
+        // Initiate both location and motion tracking simultaneously
         navigator.geolocation.watchPosition(
           updateCoordinates,
           handleError,
           options
         );
 
-        // Load Google Maps script first
-        loadGoogleMapsScript();
-
-        // Then handle motion permission
         handleMotionPermission();
+
+        // Load Google Maps script after initiating location and motion tracking
+        loadGoogleMapsScript();
       } else {
         console.error('Geolocation is not supported by your browser');
       }
