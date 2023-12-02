@@ -8,7 +8,60 @@
   integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
   crossorigin=""/>
   <style>
-    /* ... (unchanged styles) ... */
+    body {
+      background-color: black;
+      color: white;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      flex-direction: column;
+    }
+
+    #locationInfo,
+    #handleMotionInfo,
+    #deviceInfo,
+    #notification {
+      padding-left: 10px;
+      padding-right: 10px;
+      text-align: left;
+      background-color: grey;
+      border-radius: 5px;
+      position: fixed;
+    }
+
+    #locationInfo {
+      top: 50px;
+    }
+
+    #handleMotionInfo {
+      top: 150px;
+      width: 125px;
+    }
+
+    #deviceInfo {
+      top: 290px;
+    }
+
+
+    #notification {
+      top: 20px;
+      text-align: center;
+      background-color: #ef9013;
+      padding: 10px;
+      border-radius: 5px;
+      display: none;
+    }
+
+    #map {
+      position: fixed;
+      top: 340px;
+      height: 400px;
+      width: 600px;
+      margin-top: 20px;
+    }
   </style>
 </head>
 <body>
@@ -54,6 +107,7 @@
             const locationInfo = document.getElementById("locationInfo");
             locationInfo.innerHTML = `<p>Latitude: ${lat}</p><p>Longitude: ${lng}</p>`;
 
+
             const notification = document.getElementById("notification");
             notification.textContent = "Location updated";
             notification.style.display = "block";
@@ -98,10 +152,10 @@
         gamma = event.gamma.toFixed(3);
 
       } else {
-        // For non-Apple devices, use webkitCompassHeading or regular deviceorientation
+        // For non-Apple devices, use webkitCompassHeading
         alpha = event.webkitCompassHeading !== null ? event.webkitCompassHeading.toFixed(3) : "Not supported";
-        beta = event.beta !== null ? event.beta.toFixed(3) : "Not supported";
-        gamma = event.gamma !== null ? event.gamma.toFixed(3) : "Not supported";
+        beta = event.webkitBeta !== null ? event.webkitBeta.toFixed(3) : "Not supported";
+        gamma = event.webkitGamma !== null ? event.webkitGamma.toFixed(3) : "Not supported";
       }
 
       const handleMotionInfo = document.getElementById("handleMotionInfo");
@@ -121,24 +175,19 @@
           .catch(error => {
             console.error('Error requesting device orientation permission:', error);
           });
-      } else if ('ondeviceorientationabsolute' in window) {
-        // For Android Chrome, which supports 'ondeviceorientationabsolute' event
-        window.addEventListener('deviceorientationabsolute', handleMotion);
-      } else if ('ondeviceorientation' in window) {
-        // For other browsers that support 'ondeviceorientation' event
-        window.addEventListener('deviceorientation', handleMotion);
       } else {
-        console.error('Device orientation events not supported');
+        console.error('Device orientation permission API not supported');
       }
     }
+
 
     if (iOS()) {
       const deviceInfo = document.getElementById("deviceInfo");
       deviceInfo.innerHTML = `<p>Apple device detected</p>`;
-    } else {
+      } else {
       const deviceInfo = document.getElementById("deviceInfo");
       deviceInfo.innerHTML = `<p>Android device detected</p>`;
-    }
+      }
 
     function iOS() {
       return [
