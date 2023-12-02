@@ -49,7 +49,7 @@
       position: fixed;
       top: 20px;
       text-align: center;
-      background-color: #6e53c6;
+      background-color: #ef9013;
       padding: 10px;
       border-radius: 5px;
       display: none;
@@ -74,6 +74,7 @@
 
   <script>
     var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    var map, infoWindow, marker;
 
     function initMap() {
       map = new google.maps.Map(document.getElementById("map"), {
@@ -81,6 +82,17 @@
         zoom: 18, // Adjust the zoom level as needed
       });
       infoWindow = new google.maps.InfoWindow();
+      marker = new google.maps.Marker({
+        map: map,
+        icon: {
+          path: google.maps.SymbolPath.CIRCLE,
+          scale: 10, // Adjust the scale of the circle
+          fillColor: 'blue',
+          fillOpacity: 0.6,
+          strokeColor: 'white',
+          strokeWeight: 2,
+        },
+      });
 
       const locationButton = document.createElement("button");
       locationButton.textContent = "Pan to Current Location";
@@ -99,6 +111,9 @@
               infoWindow.setContent("Location found.");
               infoWindow.open(map);
               map.setCenter(pos);
+
+              // Update marker position
+              marker.setPosition(pos);
             },
             () => {
               handleLocationError(true, infoWindow, map.getCenter());
@@ -130,11 +145,8 @@
       handleMotionInfo.style.padding = fixedPadding;
 
       map.setCenter(latLng);
-      const marker = new google.maps.Marker({
-        position: latLng,
-        map: map,
-        title: "Current Location",
-      });
+      // Update marker position
+      marker.setPosition(latLng);
 
       const notification = document.getElementById("notification");
       notification.textContent = "Location updated";
@@ -146,7 +158,6 @@
 
       const locationInfo = document.getElementById("locationInfo");
       locationInfo.innerHTML = `<p>Latitude: ${latitude}</p><p>Longitude: ${longitude}</p>`;
-
       document.getElementById("getLocationBtn").style.display = "none";
       document.getElementById("map").style.display = "block";
     } 
