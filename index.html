@@ -74,20 +74,20 @@
   <script>
     var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
     var map, marker;
-
+  
     function initMap() {
       map = L.map('map').setView([0, 0], 18);
-
+  
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors'
       }).addTo(map);
-
+  
       marker = L.circleMarker([0, 0], {
         radius: 10,
         color: 'blue',
         fillOpacity: 0.6,
       }).addTo(map);
-
+  
       const locationButton = document.getElementById("getLocationBtn");
       locationButton.addEventListener("click", () => {
         if (navigator.geolocation) {
@@ -95,24 +95,24 @@
             (position) => {
               const lat = position.coords.latitude;
               const lng = position.coords.longitude;
-
+  
               // Update marker position
               marker.setLatLng([lat, lng]);
-
+  
               // Update map view
               map.setView([lat, lng], 18);
-
+  
               const locationInfo = document.getElementById("locationInfo");
               locationInfo.innerHTML = `<p>Latitude: ${lat}</p><p>Longitude: ${lng}</p>`;
-
+  
               const notification = document.getElementById("notification");
               notification.textContent = "Location updated";
               notification.style.display = "block";
-
+  
               setTimeout(() => {
                 notification.style.display = "none";
               }, 5000);
-
+  
               document.getElementById("getLocationBtn").style.display = "none";
               document.getElementById("map").style.display = "block";
             },
@@ -125,27 +125,27 @@
         }
       });
     }
-
+  
     function handleLocationError(browserHasGeolocation) {
       const locationInfo = document.getElementById("locationInfo");
       locationInfo.innerHTML = `<p>Location not available</p>`;
-
+  
       const notification = document.getElementById("notification");
       notification.textContent = browserHasGeolocation
         ? "Error: The Geolocation service failed."
         : "Error: Your browser doesn't support geolocation.";
       notification.style.display = "block";
     }
-
+  
     function handleMotion(event) {
       const alpha = event.alpha.toFixed(3);
       const beta = event.beta.toFixed(3);
       const gamma = event.gamma.toFixed(3);
-
+  
       const handleMotionInfo = document.getElementById("handleMotionInfo");
       handleMotionInfo.innerHTML = `<p>Alpha: ${alpha}</p><p>Beta: ${beta}</p><p>Gamma: ${gamma}</p>`;
     }
-
+  
     function handleMotionPermission() {
       if (isIOS) {
         if (typeof DeviceOrientationEvent.requestPermission === 'function') {
@@ -154,14 +154,14 @@
               if (permissionState === 'granted') {
                 window.addEventListener('deviceorientation', handleMotion);
               } else {
-                console.error('Permission denied for device orientation');
+                alert('Permission denied for device orientation');
               }
             })
             .catch(error => {
-              console.error('Error requesting device orientation permission:', error);
+              alert('Error requesting device orientation permission: ' + error);
             });
         } else {
-          console.error('Device orientation permission API not supported');
+          alert('Device orientation permission API not supported');
         }
       } else {
         // For Android, use the Permissions API
@@ -178,60 +178,60 @@
               if (permissionStatus.state === 'granted') {
                 window.addEventListener('deviceorientation', handleMotion);
               } else {
-                console.error('Permission denied for device orientation');
+                alert('Permission denied for device orientation');
               }
             })
             .catch(error => {
-              console.error('Error checking or requesting device orientation permission:', error);
+              alert('Error checking or requesting device orientation permission: ' + error);
             });
         } else {
-          console.error('Device orientation permission not supported in this browser');
+          alert('Device orientation permission not supported in this browser');
         }
       }
     }
-
+  
     function handleError(error) {
-      console.error(`Error getting location: ${error.message}`);
+      alert('Error getting location: ' + error.message);
     }
-
+  
     document.getElementById('getLocationBtn').addEventListener('click', () => {
       if ('geolocation' in navigator) {
         const options = {
           enableHighAccuracy: true,
           timeout: 15000,
         };
-
+  
         // Initiate both location and motion tracking simultaneously
         navigator.geolocation.watchPosition(
           (position) => {
             // Update coordinates
             const lat = position.coords.latitude;
             const lng = position.coords.longitude;
-
+  
             // Update marker position
             marker.setLatLng([lat, lng]);
-
+  
             // Update map view
             map.setView([lat, lng], 18);
-
+  
             const locationInfo = document.getElementById("locationInfo");
             locationInfo.innerHTML = `<p>Latitude: ${lat}</p><p>Longitude: ${lng}</p>`;
-
+  
             const notification = document.getElementById("notification");
             notification.textContent = "Location updated";
             notification.style.display = "block";
-
+  
             setTimeout(() => {
               notification.style.display = "none";
             }, 5000);
-
+  
             document.getElementById("getLocationBtn").style.display = "none";
             document.getElementById("map").style.display = "block";
           },
           handleError,
           options
         );
-
+  
         handleMotionPermission();
       } else {
         handleLocationError(false);
