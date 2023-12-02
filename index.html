@@ -152,11 +152,6 @@
         beta = event.beta.toFixed(3);
         gamma = event.gamma.toFixed(3);
 
-        var elem = document.createElement("img");
-        elem.setAttribute("src", "http://img.zohostatic.com/discussions/v1/images/defaultPhoto.png");
-        elem.setAttribute("height", "30");
-        elem.setAttribute("width", "30");
-        document.getElementById("deviceInfo").appendChild(elem);
       } else {
         // For non-Apple devices, use webkitCompassHeading
         alpha = event.webkitCompassHeading !== null ? event.webkitCompassHeading.toFixed(3) : "Not supported";
@@ -185,6 +180,17 @@
         console.error('Device orientation permission API not supported');
       }
     }
+
+
+    if (iOS()) {
+      var elem = document.createElement("img");
+      elem.setAttribute("src", "http://img.zohostatic.com/discussions/v1/images/defaultPhoto.png");
+      elem.setAttribute("height", "20");
+      elem.setAttribute("width", "20");
+      document.getElementById("deviceInfo").appendChild(elem);
+      } else {
+
+      }
 
     function iOS() {
       return [
