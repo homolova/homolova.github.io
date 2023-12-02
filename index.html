@@ -154,14 +154,14 @@
               if (permissionState === 'granted') {
                 window.addEventListener('deviceorientation', handleMotion);
               } else {
-                alert('Permission denied for device orientation');
+                console.error('Permission denied for device orientation');
               }
             })
             .catch(error => {
-              alert('Error requesting device orientation permission: ' + error);
+              console.error('Error requesting device orientation permission: ', error);
             });
         } else {
-          alert('Device orientation permission API not supported');
+          console.error('Device orientation permission API not supported');
         }
       } else {
         // For Android, use the Permissions API
@@ -178,20 +178,20 @@
               if (permissionStatus.state === 'granted') {
                 window.addEventListener('deviceorientation', handleMotion);
               } else {
-                alert('Permission denied for device orientation');
+                console.error('Permission denied for device orientation');
               }
             })
             .catch(error => {
-              alert('Error checking or requesting device orientation permission: ' + error);
+              console.error('Error checking or requesting device orientation permission: ', error);
             });
         } else {
-          alert('Device orientation permission not supported in this browser');
+          console.error('Device orientation permission not supported in this browser');
         }
       }
     }
   
     function handleError(error) {
-      alert('Error getting location: ' + error.message);
+      console.error('Error getting location: ', error.message);
     }
   
     document.getElementById('getLocationBtn').addEventListener('click', () => {
@@ -237,6 +237,9 @@
         handleLocationError(false);
       }
     });
+  
+    // Adding a delay before initializing the map
+    setTimeout(initMap, 500);
   </script>
 </body>
 </html>
