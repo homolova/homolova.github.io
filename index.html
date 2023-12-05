@@ -150,9 +150,9 @@
         gamma = event.gamma.toFixed(3);
       } else {
         // For non-Apple devices, use webkitCompassHeading
-        alpha = event.webkitCompassHeading !== null ? event.webkitCompassHeading.toFixed(3) : "Not supported";
-        beta = event.webkitBeta !== null ? event.webkitBeta.toFixed(3) : "Not supported";
-        gamma = event.webkitGamma !== null ? event.webkitGamma.toFixed(3) : "Not supported";
+        alpha = event.alpha.toFixed(3);
+        beta = event.beta.toFixed(3);
+        gamma = event.gamma.toFixed(3);
       }
 
       const handleMotionInfo = document.getElementById("handleMotionInfo");
@@ -202,7 +202,8 @@
         'iPod Simulator',
         'iPad',
         'iPhone',
-        'iPod'
+        'iPod',
+        'MacBook',
       ].includes(navigator.platform)
       // iPad on iOS 13 detection
       || (navigator.userAgent.includes("Mac") && "ontouchend" in document);
