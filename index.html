@@ -36,7 +36,6 @@
       display: none;
     }
 
-
     #locationInfo,
     #handleMotionInfo,
     #deviceInfo,
@@ -97,6 +96,7 @@
 
   <script>
     var map, marker;
+    var isTrackingStarted = false;
 
     function initMap() {
       map = L.map('map').setView([0, 0], 18);
@@ -124,19 +124,21 @@
             // Update map view
             map.setView([lat, lng], 18);
 
-            const locationInfo = document.getElementById("locationInfo");
-            locationInfo.innerHTML = `<p>Latitude: ${lat}</p><p>Longitude: ${lng}</p>`;
+            if (isTrackingStarted) {
+              const locationInfo = document.getElementById("locationInfo");
+              locationInfo.innerHTML = `<p>Latitude: ${lat}</p><p>Longitude: ${lng}</p>`;
 
-            const notification = document.getElementById("notification");
-            notification.textContent = "Location updated";
-            notification.style.display = "block";
+              const notification = document.getElementById("notification");
+              notification.textContent = "Location updated";
+              notification.style.display = "block";
 
-            setTimeout(() => {
-              notification.style.display = "none";
-            }, 5000);
+              setTimeout(() => {
+                notification.style.display = "none";
+              }, 5000);
 
-            // Now that we have geolocation, start listening to device orientation
-            handleMotionPermission();
+              // Now that we have geolocation, start listening to device orientation
+              handleMotionPermission();
+            }
           },
           (error) => {
             handleLocationError(true);
@@ -206,6 +208,7 @@
         };
 
         document.getElementById('startButton').addEventListener('click', () => {
+          isTrackingStarted = true;
           DeviceOrientationEvent.requestPermission()
             .then(handlePermission)
             .catch(error => {
@@ -215,6 +218,7 @@
       } else {
         // For Android devices or other platforms, check if the event is supported
         document.getElementById('startButton').addEventListener('click', () => {
+          isTrackingStarted = true;
           welcomePage.classList.add('hidden');
           locationInfo.classList.remove('hidden');
           handleMotionInfo.classList.remove('hidden');
