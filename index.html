@@ -64,6 +64,7 @@
   </style>
 </head>
 <body>
+  <button id="startButton">Start</button>
   <div id="locationInfo" class="column"></div>
   <div id="handleMotionInfo" class="column"></div>
   <div id="deviceInfo" class="column"></div>
@@ -164,26 +165,30 @@
 
       if (isIOS && typeof DeviceOrientationEvent.requestPermission === 'function') {
         // For iOS devices, use requestPermission
-        DeviceOrientationEvent.requestPermission()
-          .then(permissionState => {
-            if (permissionState === 'granted') {
-              window.addEventListener('deviceorientation', handleMotion);
-            } else {
-              console.error('Permission denied for device orientation');
-            }
-          })
-          .catch(error => {
-            console.error('Error requesting device orientation permission:', error);
-          });
-      } else if (!isIOS) {
-        // For Android devices or other platforms, check if the event is supported
-        if ('DeviceOrientationEvent' in window) {
-          window.addEventListener('deviceorientation', handleMotion);
-        } else {
-          console.error('Device orientation not supported on this platform');
-        }
+        const handlePermission = status => {
+          if (status === 'granted') {
+            window.addEventListener('deviceorientation', handleMotion);
+          } else {
+            console.error('Permission denied for device orientation');
+          }
+        };
+
+        document.getElementById('startButton').addEventListener('click', () => {
+          DeviceOrientationEvent.requestPermission()
+            .then(handlePermission)
+            .catch(error => {
+              console.error('Error requesting device orientation permission:', error);
+            });
+        });
       } else {
-        console.error('Device orientation permission API not supported');
+        // For Android devices or other platforms, check if the event is supported
+        document.getElementById('startButton').addEventListener('click', () => {
+          if ('DeviceOrientationEvent' in window) {
+            window.addEventListener('deviceorientation', handleMotion);
+          } else {
+            console.error('Device orientation not supported on this platform');
+          }
+        });
       }
     }
 
