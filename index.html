@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Location Tracker</title>
-  <!-- Replace the Leaflet script source with this CDN -->
   <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
   <style>
     body {
@@ -19,241 +18,52 @@
       flex-direction: column;
     }
 
-    #welcome {
-      text-align: center;
-    }
-
-    #h1 {
-      font-size: 40px;
-    }
-
-    #welcomeText {
-      margin-bottom: 70px;
-      font-size: 15px;
-    }
-
-    #startButton {
-      padding: 10px 20px;
-      font-size: 18px;
-      cursor: pointer;
-      background-color: #ef9013;
-      color: black;
-      border: none;
-      border-radius: 5px;
-    }
-
-    #locationInfo,
-    #handleMotionInfo,
-    #deviceInfo,
-    #notification,
     #map {
-      display: none;
-    }
-
-    #locationInfo,
-    #handleMotionInfo,
-    #deviceInfo,
-    #notification {
-      padding-left: 10px;
-      padding-right: 10px;
-      text-align: left;
-      background-color: grey;
-      border-radius: 5px;
-      position: fixed;
-    }
-
-    #locationInfo {
-      top: 50px;
-    }
-
-    #handleMotionInfo {
-      top: 150px;
-      width: 125px;
-    }
-
-    #deviceInfo {
-      top: 290px;
-    }
-
-    #notification {
-      top: 20px;
-      text-align: center;
-      background-color: #ef9013;
-      padding: 10px;
-      border-radius: 5px;
-      display: none;
-    }
-
-    #map {
-      position: fixed;
-      top: 340px;
       height: 300px;
       width: 400px;
-      margin-top: 20px;
     }
   </style>
 </head>
 <body>
-  <div id="welcome">
-    <h1>THE LOCATION TRACKER 🌐</h1>
-    <p id="welcomeText">CLICK THE BUTTON BELOW  <br> TO GET STARTED ↓</p>
-    <button id="startButton">START</button>
-  </div>
-
-  <div id="locationInfo" class="column"></div>
-  <div id="handleMotionInfo" class="column"></div>
-  <div id="deviceInfo" class="column"></div>
-  <div id="notification" class="column"></div>
-  <div id="map" class="column"></div>
+  <div id="map"></div>
 
   <script>
     document.addEventListener("DOMContentLoaded", function () {
-      var map, marker, visibilityRadius;
+      var map, marker;
 
-      document.getElementById('startButton').addEventListener('click', () => {
-        // Display the hidden elements
-        document.getElementById('welcome').style.display = 'none';
-        document.getElementById('locationInfo').style.display = 'block';
-        document.getElementById('handleMotionInfo').style.display = 'block';
-        document.getElementById('deviceInfo').style.display = 'block';
-        document.getElementById('notification').style.display = 'block';
-        document.getElementById('map').style.display = 'block';
+      // Initialize the map
+      map = L.map('map').setView([0, 0], 18);
 
-        // Trigger the gyroscope request and map initialization
-        handleMotionPermission();
-        initMap();
-      });
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+      }).addTo(map);
 
-      function initMap() {
-        map = L.map('map').setView([0, 0], 18);
+      // Initialize the marker
+      marker = L.circleMarker([0, 0], {
+        radius: 10,
+        color: 'blue',
+        fillOpacity: 0.6,
+      }).addTo(map);
 
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '© OpenStreetMap contributors'
-        }).addTo(map);
+      // Watch the geolocation and update the marker
+      if (navigator.geolocation) {
+        navigator.geolocation.watchPosition(
+          (position) => {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
 
-        marker = L.circleMarker([0, 0], {
-          radius: 10,
-          color: 'blue',
-          fillOpacity: 0.6,
-        }).addTo(map);
+            // Update marker position
+            marker.setLatLng([lat, lng]);
 
-        // Create a semicircle for visibility radius
-        visibilityRadius = L.semiCircle([0, 0], {
-          radius: 100,  // Set the initial radius (adjust as needed)
-          color: 'red',
-          fillOpacity: 0.2,
-          startAngle: 60,
-          stopAngle: 300,
-        }).addTo(map);
-
-        // Watch the geolocation and update the marker and visibility radius
-        if (navigator.geolocation) {
-          navigator.geolocation.watchPosition(
-            (position) => {
-              const lat = position.coords.latitude;
-              const lng = position.coords.longitude;
-
-              // Update marker position
-              marker.setLatLng([lat, lng]);
-
-              // Update visibility radius position
-              visibilityRadius.setLatLng([lat, lng]);
-
-              // Update map view
-              map.setView([lat, lng], 18);
-
-              const locationInfo = document.getElementById("locationInfo");
-              locationInfo.innerHTML = `<p>Latitude: ${lat}</p><p>Longitude: ${lng}</p>`;
-
-              const notification = document.getElementById("notification");
-              notification.textContent = "Location updated";
-              notification.style.display = "block";
-
-              setTimeout(() => {
-                notification.style.display = "none";
-              }, 5000);
-
-              // Now that we have geolocation, start listening to device orientation
-              handleMotionPermission();
-            },
-            (error) => {
-              handleLocationError(true);
-            },
-          );
-        } else {
-          handleLocationError(false);
-        }
-      }
-
-      function handleLocationError(browserHasGeolocation) {
-        const locationInfo = document.getElementById("locationInfo");
-        locationInfo.innerHTML = `<p>Location not available</p>`;
-
-        const notification = document.getElementById("notification");
-        notification.textContent = browserHasGeolocation
-          ? "Error: The Geolocation service failed."
-          : "Error: Your browser doesn't support geolocation.";
-        notification.style.display = "block";
-      }
-
-      function handleMotion(event) {
-        let alpha, beta, gamma;
-
-        alpha = event.alpha.toFixed(3);
-        beta = event.beta.toFixed(3);
-        gamma = event.gamma.toFixed(3);
-
-        const handleMotionInfo = document.getElementById("handleMotionInfo");
-        handleMotionInfo.innerHTML = `<p>Alpha: ${alpha}</p><p>Beta: ${beta}</p><p>Gamma: ${gamma}</p>`;
-      }
-
-      function handleMotionPermission() {
-        const isIOS = iOS();
-
-        if (isIOS && typeof DeviceOrientationEvent.requestPermission === 'function') {
-          // For iOS devices, use requestPermission
-          const handlePermission = status => {
-            if (status === 'granted') {
-              window.addEventListener('deviceorientation', handleMotion);
-            } else {
-              console.error('Permission denied for device orientation');
-            }
-          };
-
-          DeviceOrientationEvent.requestPermission()
-            .then(handlePermission)
-            .catch(error => {
-              console.error('Error requesting device orientation permission:', error);
-            });
-        } else {
-          // For Android devices or other platforms, check if the event is supported
-          if ('DeviceOrientationEvent' in window) {
-            window.addEventListener('deviceorientation', handleMotion);
-          } else {
-            console.error('Device orientation not supported on this platform');
-          }
-        }
-      }
-
-      if (iOS()) {
-        const deviceInfo = document.getElementById("deviceInfo");
-        deviceInfo.innerHTML = `<p>Apple device detected</p>`;
+            // Update map view
+            map.setView([lat, lng], 18);
+          },
+          (error) => {
+            console.error('Error getting geolocation:', error);
+          },
+        );
       } else {
-        const deviceInfo = document.getElementById("deviceInfo");
-        deviceInfo.innerHTML = `<p>Android device detected</p>`;
-      }
-
-      function iOS() {
-        return [
-          'iPad Simulator',
-          'iPhone Simulator',
-          'iPod Simulator',
-          'iPad',
-          'iPhone',
-          'iPod'
-        ].includes(navigator.platform)
-        // iPad on iOS 13 detection
-        || (navigator.userAgent.includes("Mac") && "ontouchend" in document);
+        console.error('Geolocation not supported');
       }
     });
   </script>
