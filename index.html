@@ -144,12 +144,12 @@
       let alpha, beta, gamma;
 
       if (iOS()) {
-        // For Apple devices, use the original handling
-        alpha = event.alpha.toFixed(3);
+        // For Apple devices, use webkitCompassHeading
+        alpha = event.webkitCompassHeading.toFixed(3);
         beta = event.beta.toFixed(3);
         gamma = event.gamma.toFixed(3);
       } else {
-        // For non-Apple devices, use webkitCompassHeading
+        // For non-Apple devices, use alpha, beta, gamma
         alpha = event.alpha.toFixed(3);
         beta = event.beta.toFixed(3);
         gamma = event.gamma.toFixed(3);
@@ -202,8 +202,7 @@
         'iPod Simulator',
         'iPad',
         'iPhone',
-        'iPod',
-        'MacBook',
+        'iPod'
       ].includes(navigator.platform)
       // iPad on iOS 13 detection
       || (navigator.userAgent.includes("Mac") && "ontouchend" in document);
