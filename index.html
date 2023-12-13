@@ -178,17 +178,9 @@
     function handleMotion(event) {
       let alpha, beta, gamma;
 
-      if (iOS()) {
-        // For Apple devices, use different properties
-        alpha = event.alpha !== null ? event.alpha.toFixed(3) : 'N/A';
-        beta = event.beta !== null ? event.beta.toFixed(3) : 'N/A';
-        gamma = event.gamma !== null ? event.gamma.toFixed(3) : 'N/A';
-      } else {
-        // For non-Apple devices, use alpha, beta, gamma
-        alpha = event.alpha.toFixed(3);
-        beta = event.beta.toFixed(3);
-        gamma = event.gamma.toFixed(3);
-      }
+      alpha = event.alpha.toFixed(3);
+      beta = event.beta.toFixed(3);
+      gamma = event.gamma.toFixed(3);
 
       const handleMotionInfo = document.getElementById("handleMotionInfo");
       handleMotionInfo.innerHTML = `<p>Alpha: ${alpha}</p><p>Beta: ${beta}</p><p>Gamma: ${gamma}</p>`;
