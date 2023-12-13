@@ -114,20 +114,6 @@
   <script>
     var map, marker, visibilityRadius;
 
-    document.getElementById('startButton').addEventListener('click', () => {
-      // Display the hidden elements
-      document.getElementById('welcome').style.display = 'none';
-      document.getElementById('locationInfo').style.display = 'block';
-      document.getElementById('handleMotionInfo').style.display = 'block';
-      document.getElementById('deviceInfo').style.display = 'block';
-      document.getElementById('notification').style.display = 'block';
-      document.getElementById('map').style.display = 'block';
-
-      // Trigger the gyroscope request and map initialization
-      handleMotionPermission();
-      initMap();
-    });
-
     function initMap() {
       map = L.map('map').setView([0, 0], 18);
 
@@ -246,6 +232,20 @@
       const deviceInfo = document.getElementById("deviceInfo");
       deviceInfo.innerHTML = `<p>Android device detected</p>`;
     }
+
+    document.getElementById('startButton').addEventListener('click', () => {
+      // Display the hidden elements
+      document.getElementById('welcome').style.display = 'none';
+      document.getElementById('locationInfo').style.display = 'block';
+      document.getElementById('handleMotionInfo').style.display = 'block';
+      document.getElementById('deviceInfo').style.display = 'block';
+      document.getElementById('notification').style.display = 'block';
+      document.getElementById('map').style.display = 'block';
+
+      // Trigger the gyroscope request and map initialization
+      handleMotionPermission();
+      initMap();
+    });
 
     function iOS() {
       return [
