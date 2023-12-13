@@ -122,6 +122,20 @@
         attribution: '© OpenStreetMap contributors'
       }).addTo(map);
 
+      // Add red point markers to the map
+      const points = [
+        { name: 'bod 1', lon: 18.9062, lat: 48.4524 },
+        { name: 'bod 2', lon: 18.9067, lat: 48.4536 },
+      ];
+
+      points.forEach(point => {
+        L.circleMarker([point.lat, point.lon], {
+          radius: 8,
+          color: 'red',
+          fillOpacity: 1,
+        }).addTo(map).bindPopup(`<b>${point.name}</b><br>Latitude: ${point.lat}<br>Longitude: ${point.lon}`);
+      });
+
       marker = L.circleMarker([0, 0], {
         radius: 10,
         color: 'blue',
