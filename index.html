@@ -64,12 +64,14 @@
   </style>
 </head>
 <body>
-  <button id="startButton">Start</button>
-  <div id="locationInfo" class="column"></div>
-  <div id="handleMotionInfo" class="column"></div>
-  <div id="deviceInfo" class="column"></div>
-  <div id="notification" class="column"></div>
-  <div id="map" class="column"></div>
+  <div id="welcomePage">
+    <button id="startButton">Start</button>
+  </div>
+  <div id="locationInfo" class="column hidden"></div>
+  <div id="handleMotionInfo" class="column hidden"></div>
+  <div id="deviceInfo" class="column hidden"></div>
+  <div id="notification" class="column hidden"></div>
+  <div id="map" class="column hidden"></div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
   integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
@@ -174,6 +176,13 @@
         };
 
         document.getElementById('startButton').addEventListener('click', () => {
+          document.getElementById('welcomePage').classList.add('hidden');
+          document.getElementById('locationInfo').classList.remove('hidden');
+          document.getElementById('handleMotionInfo').classList.remove('hidden');
+          document.getElementById('deviceInfo').classList.remove('hidden');
+          document.getElementById('notification').classList.remove('hidden');
+          document.getElementById('map').classList.remove('hidden');
+
           DeviceOrientationEvent.requestPermission()
             .then(handlePermission)
             .catch(error => {
@@ -183,6 +192,13 @@
       } else {
         // For Android devices or other platforms, check if the event is supported
         document.getElementById('startButton').addEventListener('click', () => {
+          document.getElementById('welcomePage').classList.add('hidden');
+          document.getElementById('locationInfo').classList.remove('hidden');
+          document.getElementById('handleMotionInfo').classList.remove('hidden');
+          document.getElementById('deviceInfo').classList.remove('hidden');
+          document.getElementById('notification').classList.remove('hidden');
+          document.getElementById('map').classList.remove('hidden');
+
           if ('DeviceOrientationEvent' in window) {
             window.addEventListener('deviceorientation', handleMotion);
           } else {
