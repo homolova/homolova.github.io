@@ -20,6 +20,28 @@
       flex-direction: column;
     }
 
+    #welcome {
+      text-align: center;
+    }
+
+    #startButton {
+      padding: 10px 20px;
+      font-size: 18px;
+      cursor: pointer;
+      background-color: #ef9013;
+      color: black;
+      border: none;
+      border-radius: 5px;
+    }
+
+    #locationInfo,
+    #handleMotionInfo,
+    #deviceInfo,
+    #notification,
+    #map {
+      display: none;
+    }
+
     #locationInfo,
     #handleMotionInfo,
     #deviceInfo,
@@ -61,11 +83,15 @@
       width: 400px;
       margin-top: 20px;
     }
-
   </style>
 </head>
 <body>
-  <button id="startButton">Start</button>
+  <div id="welcome">
+    <h1>Welcome to the Location Tracker!</h1>
+    <p>Click the button below to get started:</p>
+    <button id="startButton">Start</button>
+  </div>
+
   <div id="locationInfo" class="column"></div>
   <div id="handleMotionInfo" class="column"></div>
   <div id="deviceInfo" class="column"></div>
