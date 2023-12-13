@@ -113,7 +113,7 @@
   crossorigin=""></script>
 
   <script>
-    var map, marker;
+      var map, marker, visibilityRadius;
 
     function initMap() {
       map = L.map('map').setView([0, 0], 18);
@@ -128,7 +128,16 @@
         fillOpacity: 0.6,
       }).addTo(map);
 
-      // Watch the geolocation and update the marker
+      // Create a semicircle for visibility radius
+      visibilityRadius = L.semiCircle([0, 0], {
+        radius: 100,  // Set the initial radius (adjust as needed)
+        color: 'red',
+        fillOpacity: 0.2,
+        startAngle: 60,
+        stopAngle: 300,
+      }).addTo(map);
+
+      // Watch the geolocation and update the marker and visibility radius
       if (navigator.geolocation) {
         navigator.geolocation.watchPosition(
           (position) => {
@@ -137,6 +146,9 @@
 
             // Update marker position
             marker.setLatLng([lat, lng]);
+
+            // Update visibility radius position
+            visibilityRadius.setLatLng([lat, lng]);
 
             // Update map view
             map.setView([lat, lng], 18);
