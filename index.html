@@ -20,22 +20,6 @@
       flex-direction: column;
     }
 
-    #welcomePage {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-    }
-
-    #startButton {
-      padding: 10px;
-      font-size: 18px;
-    }
-
-    .hidden {
-      display: none;
-    }
-
     #locationInfo,
     #handleMotionInfo,
     #deviceInfo,
@@ -81,14 +65,12 @@
   </style>
 </head>
 <body>
-  <div id="welcomePage">
-    <button id="startButton">Start</button>
-  </div>
-  <div id="locationInfo" class="column hidden"></div>
-  <div id="handleMotionInfo" class="column hidden"></div>
-  <div id="deviceInfo" class="column hidden"></div>
-  <div id="notification" class="column hidden"></div>
-  <div id="map" class="column hidden"></div>
+  <button id="startButton">Start</button>
+  <div id="locationInfo" class="column"></div>
+  <div id="handleMotionInfo" class="column"></div>
+  <div id="deviceInfo" class="column"></div>
+  <div id="notification" class="column"></div>
+  <div id="map" class="column"></div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
   integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
@@ -96,7 +78,6 @@
 
   <script>
     var map, marker;
-    var isTrackingStarted = false;
 
     function initMap() {
       map = L.map('map').setView([0, 0], 18);
@@ -124,21 +105,19 @@
             // Update map view
             map.setView([lat, lng], 18);
 
-            if (isTrackingStarted) {
-              const locationInfo = document.getElementById("locationInfo");
-              locationInfo.innerHTML = `<p>Latitude: ${lat}</p><p>Longitude: ${lng}</p>`;
+            const locationInfo = document.getElementById("locationInfo");
+            locationInfo.innerHTML = `<p>Latitude: ${lat}</p><p>Longitude: ${lng}</p>`;
 
-              const notification = document.getElementById("notification");
-              notification.textContent = "Location updated";
-              notification.style.display = "block";
+            const notification = document.getElementById("notification");
+            notification.textContent = "Location updated";
+            notification.style.display = "block";
 
-              setTimeout(() => {
-                notification.style.display = "none";
-              }, 5000);
+            setTimeout(() => {
+              notification.style.display = "none";
+            }, 5000);
 
-              // Now that we have geolocation, start listening to device orientation
-              handleMotionPermission();
-            }
+            // Now that we have geolocation, start listening to device orientation
+            handleMotionPermission();
           },
           (error) => {
             handleLocationError(true);
@@ -184,31 +163,18 @@
 
     function handleMotionPermission() {
       const isIOS = iOS();
-      const welcomePage = document.getElementById('welcomePage');
-      const locationInfo = document.getElementById('locationInfo');
-      const handleMotionInfo = document.getElementById('handleMotionInfo');
-      const deviceInfo = document.getElementById('deviceInfo');
-      const notification = document.getElementById('notification');
-      const mapElement = document.getElementById('map');
 
       if (isIOS && typeof DeviceOrientationEvent.requestPermission === 'function') {
         // For iOS devices, use requestPermission
         const handlePermission = status => {
           if (status === 'granted') {
             window.addEventListener('deviceorientation', handleMotion);
-            welcomePage.classList.add('hidden');
-            locationInfo.classList.remove('hidden');
-            handleMotionInfo.classList.remove('hidden');
-            deviceInfo.classList.remove('hidden');
-            notification.classList.remove('hidden');
-            mapElement.classList.remove('hidden');
           } else {
             console.error('Permission denied for device orientation');
           }
         };
 
         document.getElementById('startButton').addEventListener('click', () => {
-          isTrackingStarted = true;
           DeviceOrientationEvent.requestPermission()
             .then(handlePermission)
             .catch(error => {
@@ -218,14 +184,6 @@
       } else {
         // For Android devices or other platforms, check if the event is supported
         document.getElementById('startButton').addEventListener('click', () => {
-          isTrackingStarted = true;
-          welcomePage.classList.add('hidden');
-          locationInfo.classList.remove('hidden');
-          handleMotionInfo.classList.remove('hidden');
-          deviceInfo.classList.remove('hidden');
-          notification.classList.remove('hidden');
-          mapElement.classList.remove('hidden');
-
           if ('DeviceOrientationEvent' in window) {
             window.addEventListener('deviceorientation', handleMotion);
           } else {
