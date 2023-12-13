@@ -112,153 +112,155 @@
   crossorigin=""></script>
 
   <script>
-    var map, marker, visibilityRadius;
+    document.addEventListener("DOMContentLoaded", function () {
+      var map, marker, visibilityRadius;
 
-    document.getElementById('startButton').addEventListener('click', () => {
-      // Display the hidden elements
-      document.getElementById('welcome').style.display = 'none';
-      document.getElementById('locationInfo').style.display = 'block';
-      document.getElementById('handleMotionInfo').style.display = 'block';
-      document.getElementById('deviceInfo').style.display = 'block';
-      document.getElementById('notification').style.display = 'block';
-      document.getElementById('map').style.display = 'block';
+      document.getElementById('startButton').addEventListener('click', () => {
+        // Display the hidden elements
+        document.getElementById('welcome').style.display = 'none';
+        document.getElementById('locationInfo').style.display = 'block';
+        document.getElementById('handleMotionInfo').style.display = 'block';
+        document.getElementById('deviceInfo').style.display = 'block';
+        document.getElementById('notification').style.display = 'block';
+        document.getElementById('map').style.display = 'block';
 
-      // Trigger the gyroscope request and map initialization
-      handleMotionPermission();
-      initMap();
-    });
+        // Trigger the gyroscope request and map initialization
+        handleMotionPermission();
+        initMap();
+      });
 
-    function initMap() {
-      map = L.map('map').setView([0, 0], 18);
+      function initMap() {
+        map = L.map('map').setView([0, 0], 18);
 
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors'
-      }).addTo(map);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
 
-      marker = L.circleMarker([0, 0], {
-        radius: 10,
-        color: 'blue',
-        fillOpacity: 0.6,
-      }).addTo(map);
+        marker = L.circleMarker([0, 0], {
+          radius: 10,
+          color: 'blue',
+          fillOpacity: 0.6,
+        }).addTo(map);
 
-      // Create a semicircle for visibility radius
-      visibilityRadius = L.semiCircle([0, 0], {
-        radius: 100,  // Set the initial radius (adjust as needed)
-        color: 'red',
-        fillOpacity: 0.2,
-        startAngle: 60,
-        stopAngle: 300,
-      }).addTo(map);
+        // Create a semicircle for visibility radius
+        visibilityRadius = L.semiCircle([0, 0], {
+          radius: 100,  // Set the initial radius (adjust as needed)
+          color: 'red',
+          fillOpacity: 0.2,
+          startAngle: 60,
+          stopAngle: 300,
+        }).addTo(map);
 
-      // Watch the geolocation and update the marker and visibility radius
-      if (navigator.geolocation) {
-        navigator.geolocation.watchPosition(
-          (position) => {
-            const lat = position.coords.latitude;
-            const lng = position.coords.longitude;
+        // Watch the geolocation and update the marker and visibility radius
+        if (navigator.geolocation) {
+          navigator.geolocation.watchPosition(
+            (position) => {
+              const lat = position.coords.latitude;
+              const lng = position.coords.longitude;
 
-            // Update marker position
-            marker.setLatLng([lat, lng]);
+              // Update marker position
+              marker.setLatLng([lat, lng]);
 
-            // Update visibility radius position
-            visibilityRadius.setLatLng([lat, lng]);
+              // Update visibility radius position
+              visibilityRadius.setLatLng([lat, lng]);
 
-            // Update map view
-            map.setView([lat, lng], 18);
+              // Update map view
+              map.setView([lat, lng], 18);
 
-            const locationInfo = document.getElementById("locationInfo");
-            locationInfo.innerHTML = `<p>Latitude: ${lat}</p><p>Longitude: ${lng}</p>`;
+              const locationInfo = document.getElementById("locationInfo");
+              locationInfo.innerHTML = `<p>Latitude: ${lat}</p><p>Longitude: ${lng}</p>`;
 
-            const notification = document.getElementById("notification");
-            notification.textContent = "Location updated";
-            notification.style.display = "block";
+              const notification = document.getElementById("notification");
+              notification.textContent = "Location updated";
+              notification.style.display = "block";
 
-            setTimeout(() => {
-              notification.style.display = "none";
-            }, 5000);
+              setTimeout(() => {
+                notification.style.display = "none";
+              }, 5000);
 
-            // Now that we have geolocation, start listening to device orientation
-            handleMotionPermission();
-          },
-          (error) => {
-            handleLocationError(true);
-          },
-        );
-      } else {
-        handleLocationError(false);
-      }
-    }
-
-    function handleLocationError(browserHasGeolocation) {
-      const locationInfo = document.getElementById("locationInfo");
-      locationInfo.innerHTML = `<p>Location not available</p>`;
-
-      const notification = document.getElementById("notification");
-      notification.textContent = browserHasGeolocation
-        ? "Error: The Geolocation service failed."
-        : "Error: Your browser doesn't support geolocation.";
-      notification.style.display = "block";
-    }
-
-    function handleMotion(event) {
-      let alpha, beta, gamma;
-
-      alpha = event.alpha.toFixed(3);
-      beta = event.beta.toFixed(3);
-      gamma = event.gamma.toFixed(3);
-
-      const handleMotionInfo = document.getElementById("handleMotionInfo");
-      handleMotionInfo.innerHTML = `<p>Alpha: ${alpha}</p><p>Beta: ${beta}</p><p>Gamma: ${gamma}</p>`;
-    }
-
-    function handleMotionPermission() {
-      const isIOS = iOS();
-
-      if (isIOS && typeof DeviceOrientationEvent.requestPermission === 'function') {
-        // For iOS devices, use requestPermission
-        const handlePermission = status => {
-          if (status === 'granted') {
-            window.addEventListener('deviceorientation', handleMotion);
-          } else {
-            console.error('Permission denied for device orientation');
-          }
-        };
-
-        DeviceOrientationEvent.requestPermission()
-          .then(handlePermission)
-          .catch(error => {
-            console.error('Error requesting device orientation permission:', error);
-          });
-      } else {
-        // For Android devices or other platforms, check if the event is supported
-        if ('DeviceOrientationEvent' in window) {
-          window.addEventListener('deviceorientation', handleMotion);
+              // Now that we have geolocation, start listening to device orientation
+              handleMotionPermission();
+            },
+            (error) => {
+              handleLocationError(true);
+            },
+          );
         } else {
-          console.error('Device orientation not supported on this platform');
+          handleLocationError(false);
         }
       }
-    }
 
-    if (iOS()) {
-      const deviceInfo = document.getElementById("deviceInfo");
-      deviceInfo.innerHTML = `<p>Apple device detected</p>`;
-    } else {
-      const deviceInfo = document.getElementById("deviceInfo");
-      deviceInfo.innerHTML = `<p>Android device detected</p>`;
-    }
+      function handleLocationError(browserHasGeolocation) {
+        const locationInfo = document.getElementById("locationInfo");
+        locationInfo.innerHTML = `<p>Location not available</p>`;
 
-    function iOS() {
-      return [
-        'iPad Simulator',
-        'iPhone Simulator',
-        'iPod Simulator',
-        'iPad',
-        'iPhone',
-        'iPod'
-      ].includes(navigator.platform)
-      // iPad on iOS 13 detection
-      || (navigator.userAgent.includes("Mac") && "ontouchend" in document);
-    }
+        const notification = document.getElementById("notification");
+        notification.textContent = browserHasGeolocation
+          ? "Error: The Geolocation service failed."
+          : "Error: Your browser doesn't support geolocation.";
+        notification.style.display = "block";
+      }
+
+      function handleMotion(event) {
+        let alpha, beta, gamma;
+
+        alpha = event.alpha.toFixed(3);
+        beta = event.beta.toFixed(3);
+        gamma = event.gamma.toFixed(3);
+
+        const handleMotionInfo = document.getElementById("handleMotionInfo");
+        handleMotionInfo.innerHTML = `<p>Alpha: ${alpha}</p><p>Beta: ${beta}</p><p>Gamma: ${gamma}</p>`;
+      }
+
+      function handleMotionPermission() {
+        const isIOS = iOS();
+
+        if (isIOS && typeof DeviceOrientationEvent.requestPermission === 'function') {
+          // For iOS devices, use requestPermission
+          const handlePermission = status => {
+            if (status === 'granted') {
+              window.addEventListener('deviceorientation', handleMotion);
+            } else {
+              console.error('Permission denied for device orientation');
+            }
+          };
+
+          DeviceOrientationEvent.requestPermission()
+            .then(handlePermission)
+            .catch(error => {
+              console.error('Error requesting device orientation permission:', error);
+            });
+        } else {
+          // For Android devices or other platforms, check if the event is supported
+          if ('DeviceOrientationEvent' in window) {
+            window.addEventListener('deviceorientation', handleMotion);
+          } else {
+            console.error('Device orientation not supported on this platform');
+          }
+        }
+      }
+
+      if (iOS()) {
+        const deviceInfo = document.getElementById("deviceInfo");
+        deviceInfo.innerHTML = `<p>Apple device detected</p>`;
+      } else {
+        const deviceInfo = document.getElementById("deviceInfo");
+        deviceInfo.innerHTML = `<p>Android device detected</p>`;
+      }
+
+      function iOS() {
+        return [
+          'iPad Simulator',
+          'iPhone Simulator',
+          'iPod Simulator',
+          'iPad',
+          'iPhone',
+          'iPod'
+        ].includes(navigator.platform)
+        // iPad on iOS 13 detection
+        || (navigator.userAgent.includes("Mac") && "ontouchend" in document);
+      }
+    });
   </script>
 </body>
 </html>
