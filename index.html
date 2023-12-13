@@ -36,6 +36,7 @@
       display: none;
     }
 
+
     #locationInfo,
     #handleMotionInfo,
     #deviceInfo,
@@ -181,25 +182,30 @@
 
     function handleMotionPermission() {
       const isIOS = iOS();
+      const welcomePage = document.getElementById('welcomePage');
+      const locationInfo = document.getElementById('locationInfo');
+      const handleMotionInfo = document.getElementById('handleMotionInfo');
+      const deviceInfo = document.getElementById('deviceInfo');
+      const notification = document.getElementById('notification');
+      const mapElement = document.getElementById('map');
 
       if (isIOS && typeof DeviceOrientationEvent.requestPermission === 'function') {
         // For iOS devices, use requestPermission
         const handlePermission = status => {
           if (status === 'granted') {
             window.addEventListener('deviceorientation', handleMotion);
+            welcomePage.classList.add('hidden');
+            locationInfo.classList.remove('hidden');
+            handleMotionInfo.classList.remove('hidden');
+            deviceInfo.classList.remove('hidden');
+            notification.classList.remove('hidden');
+            mapElement.classList.remove('hidden');
           } else {
             console.error('Permission denied for device orientation');
           }
         };
 
         document.getElementById('startButton').addEventListener('click', () => {
-          document.getElementById('welcomePage').classList.add('hidden');
-          document.getElementById('locationInfo').classList.remove('hidden');
-          document.getElementById('handleMotionInfo').classList.remove('hidden');
-          document.getElementById('deviceInfo').classList.remove('hidden');
-          document.getElementById('notification').classList.remove('hidden');
-          document.getElementById('map').classList.remove('hidden');
-
           DeviceOrientationEvent.requestPermission()
             .then(handlePermission)
             .catch(error => {
@@ -209,12 +215,12 @@
       } else {
         // For Android devices or other platforms, check if the event is supported
         document.getElementById('startButton').addEventListener('click', () => {
-          document.getElementById('welcomePage').classList.add('hidden');
-          document.getElementById('locationInfo').classList.remove('hidden');
-          document.getElementById('handleMotionInfo').classList.remove('hidden');
-          document.getElementById('deviceInfo').classList.remove('hidden');
-          document.getElementById('notification').classList.remove('hidden');
-          document.getElementById('map').classList.remove('hidden');
+          welcomePage.classList.add('hidden');
+          locationInfo.classList.remove('hidden');
+          handleMotionInfo.classList.remove('hidden');
+          deviceInfo.classList.remove('hidden');
+          notification.classList.remove('hidden');
+          mapElement.classList.remove('hidden');
 
           if ('DeviceOrientationEvent' in window) {
             window.addEventListener('deviceorientation', handleMotion);
