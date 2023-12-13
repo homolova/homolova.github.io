@@ -154,9 +154,6 @@
       }
     }
 
-    // Adding a delay before initializing the map
-    setTimeout(initMap, 500);
-
     function handleLocationError(browserHasGeolocation) {
       const locationInfo = document.getElementById("locationInfo");
       locationInfo.innerHTML = `<p>Location not available</p>`;
@@ -200,22 +197,18 @@
           }
         };
 
-        document.getElementById('startButton').addEventListener('click', () => {
-          DeviceOrientationEvent.requestPermission()
-            .then(handlePermission)
-            .catch(error => {
-              console.error('Error requesting device orientation permission:', error);
-            });
-        });
+        DeviceOrientationEvent.requestPermission()
+          .then(handlePermission)
+          .catch(error => {
+            console.error('Error requesting device orientation permission:', error);
+          });
       } else {
         // For Android devices or other platforms, check if the event is supported
-        document.getElementById('startButton').addEventListener('click', () => {
-          if ('DeviceOrientationEvent' in window) {
-            window.addEventListener('deviceorientation', handleMotion);
-          } else {
-            console.error('Device orientation not supported on this platform');
-          }
-        });
+        if ('DeviceOrientationEvent' in window) {
+          window.addEventListener('deviceorientation', handleMotion);
+        } else {
+          console.error('Device orientation not supported on this platform');
+        }
       }
     }
 
@@ -226,6 +219,19 @@
       const deviceInfo = document.getElementById("deviceInfo");
       deviceInfo.innerHTML = `<p>Android device detected</p>`;
     }
+
+    document.getElementById('startButton').addEventListener('click', () => {
+      // Display the hidden elements
+      document.getElementById('welcome').style.display = 'none';
+      document.getElementById('locationInfo').style.display = 'block';
+      document.getElementById('handleMotionInfo').style.display = 'block';
+      document.getElementById('deviceInfo').style.display = 'block';
+      document.getElementById('notification').style.display = 'block';
+      document.getElementById('map').style.display = 'block';
+
+      // Trigger the map initialization
+      initMap();
+    });
 
     function iOS() {
       return [
