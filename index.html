@@ -142,18 +142,19 @@
         }).addTo(map).bindPopup(`<b>${point.name}</b><br>Latitude: ${point.lat}<br>Longitude: ${point.lon}`);
       });
 
-      L.semiCircle([48.4556, 18.9060], {
-        radius: 500,
-        color: 'blue',
-        startAngle: 45,
-        stopAngle: 135
-      }).addTo(map);
-
       marker = L.circleMarker([0, 0], {
         radius: 10,
         color: 'blue',
         fillOpacity: 0.6,
       }).addTo(map);
+
+
+      // L.semiCircle([48.4556, 18.9060], {
+      //   radius: 500,
+      //   color: 'blue',
+      //   startAngle: 45,
+      //   stopAngle: 135
+      // }).addTo(map);
 
       // Watch the geolocation and update the marker
       if (navigator.geolocation) {
