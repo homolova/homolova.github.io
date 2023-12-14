@@ -124,8 +124,14 @@
 
       // Add red point markers to the map
       const points = [
-        { name: 'bod 1', lon: 18.9062, lat: 48.4524 },
-        { name: 'bod 2', lon: 18.9067, lat: 48.4536 },
+        { name: 'LV_1', lon: 18.6181, lat: 48.2201 },
+        { name: 'LV_2', lon: 18.6199, lat: 48.2159 }, 
+        { name: 'LV_3', lon: 18.6273, lat: 48.2177 },
+        { name: 'LV_4', lon: 18.6251, lat: 48.2137 },
+        { name: 'BS_1', lon: 18.9062, lat: 48.4524 },
+        { name: 'BS_2', lon: 18.9067, lat: 48.4536 },
+        { name: 'BS_3', lon: 18.9052, lat: 48.4555 },
+        { name: 'BS_4', lon: 18.9067, lat: 48.4536 },
       ];
 
       points.forEach(point => {
@@ -199,17 +205,9 @@
     function handleMotion(event) {
       let alpha, beta, gamma;
 
-      if (iOS()) {
-        // For Apple devices, use different properties
-        alpha = event.alpha !== null ? event.alpha.toFixed(3) : 'N/A';
-        beta = event.beta !== null ? event.beta.toFixed(3) : 'N/A';
-        gamma = event.gamma !== null ? event.gamma.toFixed(3) : 'N/A';
-      } else {
-        // For non-Apple devices, use alpha, beta, gamma
-        alpha = event.alpha.toFixed(3);
-        beta = event.beta.toFixed(3);
-        gamma = event.gamma.toFixed(3);
-      }
+      alpha = event.alpha.toFixed(3);
+      beta = event.beta.toFixed(3);
+      gamma = event.gamma.toFixed(3);
 
       const handleMotionInfo = document.getElementById("handleMotionInfo");
       handleMotionInfo.innerHTML = `<p>Alpha: ${alpha}</p><p>Beta: ${beta}</p><p>Gamma: ${gamma}</p>`;
