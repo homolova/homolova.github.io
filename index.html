@@ -141,10 +141,9 @@
       polkruh = L.semiCircle([0, 0], {
         radius: 500,
         color: 'blue',
-        startAngle: -60 + device_alpha, 
-        stopAngle: 60 + device_alpha
+        startAngle: -60, 
+        stopAngle: 60
       }).addTo(map);
-
 
       points.forEach(point => {
         L.circleMarker([point.lat, point.lon], {
@@ -189,6 +188,8 @@
 
             // Now that we have geolocation, start listening to device orientation
             handleMotionPermission();
+            polkruh.setStartAngle(device_alpha-60);
+            polkruh.setStopAngle(device_alpha+60);
           },
           (error) => {
             handleLocationError(true);
