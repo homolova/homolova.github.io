@@ -120,7 +120,7 @@
     var device_alpha, device_beta, device_gamma;
 
     function initMap() {
-      map = L.map('map').setView([0, 0], 16);
+      map = L.map('map').setView([0, 0], 14);
 
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors'
@@ -138,6 +138,12 @@
         { name: 'BS_4', lon: 18.9067, lat: 48.4536 },
       ];
 
+      polkruh = L.semiCircle([0, 0], {
+        radius: 500,
+        color: 'blue',
+        startAngle: -60,
+        stopAngle: 60,
+      }).addTo(map);
 
       points.forEach(point => {
         L.circleMarker([point.lat, point.lon], {
@@ -209,6 +215,8 @@
       device_beta = event.beta.toFixed(3);
       device_gamma = event.gamma.toFixed(3);
 
+      polkruh.setStartAngle(device_alpha+300);
+      polkruh.setStopAngle(device_alpha+60);
 
       const handleMotionInfo = document.getElementById("handleMotionInfo");
       handleMotionInfo.innerHTML = `<p>Alpha: ${device_alpha}</p><p>Beta: ${device_beta}</p><p>Gamma: ${device_gamma}</p>`;
