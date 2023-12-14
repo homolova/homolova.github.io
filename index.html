@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Semicircle Test</title>
+  <title>Location Tracker</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
   integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
   crossorigin=""/>
@@ -13,10 +13,20 @@
   <script src="https://jieter.github.io/Leaflet-semicircle/Semicircle.js"></script>
 </head>
 <body>
-  <div id="map" style="height: 400px;"></div>
+  <div id="welcome">
+    <h1>THE LOCATION TRACKER 🌐</h1>
+    <p id="welcomeText">CLICK THE BUTTON BELOW  <br> TO GET STARTED ↓</p>
+    <button id="startButton">START</button>
+  </div>
+
+  <div id="locationInfo" class="column"></div>
+  <div id="handleMotionInfo" class="column"></div>
+  <div id="deviceInfo" class="column"></div>
+  <div id="notification" class="column"></div>
+  <div id="map" class="column"></div>
 
   <script>
-    var map, polkruh;
+    var map, marker, polkruh;
 
     function initMap() {
       map = L.map('map').setView([0, 0], 14);
@@ -32,64 +42,58 @@
         stopAngle: 180,
       }).addTo(map);
 
-      // Watch the device orientation and update the semicircle
-      window.addEventListener('deviceorientation', handleMotion);
-    }
-
-    function handleMotion(event) {
-      const device_alpha = event.alpha.toFixed(3);
-      const device_beta = event.beta.toFixed(3);
-      const device_gamma = event.gamma.toFixed(3);
-
-      // Calculate start and stop angles based on device orientation
-      const startAngle = device_alpha - 90;
-      const stopAngle = device_alpha + 90;
-
-      // Set start and stop angles for the semicircle
-      polkruh.setStartAngle(startAngle);
-      polkruh.setStopAngle(stopAngle);
-    }
-
-    initMap();
-  </script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Semicircle Test</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-  integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-  crossorigin=""/>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-  integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-  crossorigin=""></script>
-  <script src="https://jieter.github.io/Leaflet-semicircle/Semicircle.js"></script>
-</head>
-<body>
-  <div id="map" style="height: 400px;"></div>
-
-  <script>
-    var map, polkruh;
-
-    function initMap() {
-      map = L.map('map').setView([0, 0], 14);
-
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors'
-      }).addTo(map);
-
-      polkruh = L.semiCircle([0, 0], {
-        radius: 500,
+      marker = L.circleMarker([0, 0], {
+        radius: 10,
         color: 'blue',
-        startAngle: 0,
-        stopAngle: 180,
+        fillOpacity: 0.6,
       }).addTo(map);
 
-      // Watch the device orientation and update the semicircle
-      window.addEventListener('deviceorientation', handleMotion);
+      // Watch the geolocation and update the marker
+      if (navigator.geolocation) {
+        navigator.geolocation.watchPosition(
+          (position) => {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+
+            // Update marker position
+            marker.setLatLng([lat, lng]);
+            polkruh.setLatLng([lat, lng]);
+
+            // Update map view
+            map.setView([lat, lng], 16);
+
+            const locationInfo = document.getElementById("locationInfo");
+            locationInfo.innerHTML = `<p>Latitude: ${lat}</p><p>Longitude: ${lng}</p>`;
+
+            const notification = document.getElementById("notification");
+            notification.textContent = "Location updated";
+            notification.style.display = "block";
+
+            setTimeout(() => {
+              notification.style.display = "none";
+            }, 5000);
+
+            // Now that we have geolocation, start listening to device orientation
+            handleMotionPermission();
+          },
+          (error) => {
+            handleLocationError(true);
+          },
+        );
+      } else {
+        handleLocationError(false);
+      }
+    }
+
+    function handleLocationError(browserHasGeolocation) {
+      const locationInfo = document.getElementById("locationInfo");
+      locationInfo.innerHTML = `<p>Location not available</p>`;
+
+      const notification = document.getElementById("notification");
+      notification.textContent = browserHasGeolocation
+        ? "Error: The Geolocation service failed."
+        : "Error: Your browser doesn't support geolocation.";
+      notification.style.display = "block";
     }
 
     function handleMotion(event) {
@@ -104,9 +108,73 @@
       // Set start and stop angles for the semicircle
       polkruh.setStartAngle(startAngle);
       polkruh.setStopAngle(stopAngle);
+
+      const handleMotionInfo = document.getElementById("handleMotionInfo");
+      handleMotionInfo.innerHTML = `<p>Alpha: ${device_alpha}</p><p>Beta: ${device_beta}</p><p>Gamma: ${device_gamma}</p>`;
     }
 
-    initMap();
+    function handleMotionPermission() {
+      const isIOS = iOS();
+
+      if (isIOS && typeof DeviceOrientationEvent.requestPermission === 'function') {
+        // For iOS devices, use requestPermission
+        const handlePermission = status => {
+          if (status === 'granted') {
+            window.addEventListener('deviceorientation', handleMotion);
+          } else {
+            console.error('Permission denied for device orientation');
+          }
+        };
+
+        DeviceOrientationEvent.requestPermission()
+          .then(handlePermission)
+          .catch(error => {
+            console.error('Error requesting device orientation permission:', error);
+          });
+      } else {
+        // For Android devices or other platforms, check if the event is supported
+        if ('DeviceOrientationEvent' in window) {
+          window.addEventListener('deviceorientation', handleMotion);
+        } else {
+          console.error('Device orientation not supported on this platform');
+        }
+      }
+    }
+
+    if (iOS()) {
+      const deviceInfo = document.getElementById("deviceInfo");
+      deviceInfo.innerHTML = `<p>Apple device detected</p>`;
+    } else {
+      const deviceInfo = document.getElementById("deviceInfo");
+      deviceInfo.innerHTML = `<p>Android device detected</p>`;
+    }
+
+    document.getElementById('startButton').addEventListener('click', () => {
+      // Display the hidden elements
+      document.getElementById('welcome').style.display = 'none';
+      document.getElementById('locationInfo').style.display = 'block';
+      document.getElementById('handleMotionInfo').style.display = 'block';
+      document.getElementById('deviceInfo').style.display = 'block';
+      document.getElementById('notification').style.display = 'block';
+      document.getElementById('map').style.display = 'block';
+
+      // Trigger the gyroscope request and map initialization
+      handleMotionPermission();
+      initMap();
+    });
+
+    function iOS() {
+      return [
+        'iPad Simulator',
+        'iPhone Simulator',
+        'iPod Simulator',
+        'iPad',
+        'iPhone',
+        'iPod'
+      ].includes(navigator.platform)
+      // iPad on iOS 13 detection
+      || (navigator.userAgent.includes("Mac") && "ontouchend" in document);
+    }
   </script>
 </body>
 </html>
