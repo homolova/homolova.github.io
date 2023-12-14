@@ -111,6 +111,8 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
   integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
   crossorigin=""></script>
+  <script src="https://unpkg.com/leaflet-semicircle/dist/leaflet-semicircle.js"></script>
+
 
   <script>
     var map, marker;
@@ -149,10 +151,10 @@
       }).addTo(map);
 
 
-      L.semiCircle([18.9060, 48.4556], {
+      L.semiCircle([48.4556, 18.9060], {
         radius: 500,
         color: 'blue',
-        startAngle: 45,
+        startAngle: 45, 
         stopAngle: 135
       }).addTo(map);
 
