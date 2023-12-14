@@ -141,8 +141,8 @@
       polkruh = L.semiCircle([0, 0], {
         radius: 500,
         color: 'blue',
-        startAngle: -60, 
-        stopAngle: 60
+        startAngle: -60 + device_alpha, 
+        stopAngle: 60 + device_alpha
       }).addTo(map);
 
 
@@ -159,8 +159,6 @@
         color: 'blue',
         fillOpacity: 0.6,
       }).addTo(map);
-
-
 
 
       // Watch the geolocation and update the marker
