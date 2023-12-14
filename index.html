@@ -215,15 +215,16 @@
       device_beta = event.beta.toFixed(3);
       device_gamma = event.gamma.toFixed(3);
 
-      let startAngle = device_alpha - 60;
-      let stopAngle = device_alpha + 60;
+      const startAngle = device_alpha - 60;
+      const stopAngle = device_alpha + 60;
 
-      // Normalize angles to be in the range [0, 360)
-      startAngle = (startAngle + 360) % 360;
-      stopAngle = (stopAngle + 360) % 360;
+  // Convert angles to radians
+      const startAngleRad = (startAngle * Math.PI) / 180;
+      const stopAngleRad = (stopAngle * Math.PI) / 180;
 
-      polkruh.setStartAngle(startAngle);
-      polkruh.setStopAngle(stopAngle);
+  // Set start and stop angles for the semicircle
+      polkruh.setStartAngle(startAngleRad);
+      polkruh.setStopAngle(stopAngleRad);
 
       const handleMotionInfo = document.getElementById("handleMotionInfo");
       handleMotionInfo.innerHTML = `<p>Alpha: ${device_alpha}</p><p>Beta: ${device_beta}</p><p>Gamma: ${device_gamma}</p>`;
