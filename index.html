@@ -7,10 +7,93 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
   integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
   crossorigin=""/>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-  integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-  crossorigin=""></script>
-  <script src="https://jieter.github.io/Leaflet-semicircle/Semicircle.js"></script>
+   <style>
+    body {
+      background-color: black;
+      color: white;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      flex-direction: column;
+    }
+
+    #welcome {
+      text-align: center;
+    }
+
+    #h1 {
+      font-size: 40px;
+    }
+
+    #welcomeText {
+      margin-bottom: 70px;
+      font-size: 15px;
+
+    }
+
+    #startButton {
+      padding: 10px 20px;
+      font-size: 18px;
+      cursor: pointer;
+      background-color: #ef9013;
+      color: black;
+      border: none;
+      border-radius: 5px;
+    }
+
+    #locationInfo,
+    #handleMotionInfo,
+    #deviceInfo,
+    #notification,
+    #map {
+      display: none;
+    }
+
+    #locationInfo,
+    #handleMotionInfo,
+    #deviceInfo,
+    #notification {
+      padding-left: 10px;
+      padding-right: 10px;
+      text-align: left;
+      background-color: grey;
+      border-radius: 5px;
+      position: fixed;
+    }
+
+    #locationInfo {
+      top: 50px;
+    }
+
+    #handleMotionInfo {
+      top: 150px;
+      width: 125px;
+    }
+
+    #deviceInfo {
+      top: 290px;
+    }
+
+    #notification {
+      top: 20px;
+      text-align: center;
+      background-color: #ef9013;
+      padding: 10px;
+      border-radius: 5px;
+      display: none;
+    }
+
+    #map {
+      position: fixed;
+      top: 340px;
+      height: 300px;
+      width: 400px;
+      margin-top: 20px;
+    }
+  </style>
 </head>
 <body>
   <div id="welcome">
@@ -25,8 +108,16 @@
   <div id="notification" class="column"></div>
   <div id="map" class="column"></div>
 
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+  integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+  crossorigin=""></script>
+  <script src="https://jieter.github.io/Leaflet-semicircle/Semicircle.js"></script>
+
+
+
   <script>
-    var map, marker, polkruh;
+    var map, marker;
+    var device_alpha, device_beta, device_gamma;
 
     function initMap() {
       map = L.map('map').setView([0, 0], 14);
@@ -35,18 +126,39 @@
         attribution: '© OpenStreetMap contributors'
       }).addTo(map);
 
+      // Add red point markers to the map
+      const points = [
+        { name: 'LV_1', lon: 18.6181, lat: 48.2201 },
+        { name: 'LV_2', lon: 18.6199, lat: 48.2159 }, 
+        { name: 'LV_3', lon: 18.6273, lat: 48.2177 },
+        { name: 'LV_4', lon: 18.6251, lat: 48.2137 },
+        { name: 'BS_1', lon: 18.9062, lat: 48.4524 },
+        { name: 'BS_2', lon: 18.9080, lat: 48.4555 },
+        { name: 'BS_3', lon: 18.9052, lat: 48.4555 },
+        { name: 'BS_4', lon: 18.9067, lat: 48.4536 },
+      ];
+
       polkruh = L.semiCircle([0, 0], {
         radius: 500,
         color: 'blue',
-        startAngle: 0,
-        stopAngle: 180,
+        startAngle: -60,
+        stopAngle: 60,
       }).addTo(map);
+
+      points.forEach(point => {
+        L.circleMarker([point.lat, point.lon], {
+          radius: 8,
+          color: 'red',
+          fillOpacity: 1,
+        }).addTo(map).bindPopup(`<b>${point.name}</b><br>Latitude: ${point.lat}<br>Longitude: ${point.lon}`);
+      });
 
       marker = L.circleMarker([0, 0], {
         radius: 10,
         color: 'blue',
         fillOpacity: 0.6,
       }).addTo(map);
+
 
       // Watch the geolocation and update the marker
       if (navigator.geolocation) {
@@ -58,6 +170,7 @@
             // Update marker position
             marker.setLatLng([lat, lng]);
             polkruh.setLatLng([lat, lng]);
+
 
             // Update map view
             map.setView([lat, lng], 16);
@@ -75,6 +188,7 @@
 
             // Now that we have geolocation, start listening to device orientation
             handleMotionPermission();
+
           },
           (error) => {
             handleLocationError(true);
@@ -97,17 +211,15 @@
     }
 
     function handleMotion(event) {
-      const device_alpha = event.alpha.toFixed(3);
-      const device_beta = event.beta.toFixed(3);
-      const device_gamma = event.gamma.toFixed(3);
+      device_alpha = event.alpha.toFixed(3);
+      device_beta = event.beta.toFixed(3);
+      device_gamma = event.gamma.toFixed(3);
 
-      // Calculate start and stop angles based on device orientation
-      const startAngle = device_alpha - 90;
-      const stopAngle = device_alpha + 90;
+      startuj = device_alpha - 60;
+      konci = device_alpha + 60;
 
-      // Set start and stop angles for the semicircle
-      polkruh.setStartAngle(startAngle);
-      polkruh.setStopAngle(stopAngle);
+      polkruh.setStartAngle(startuj);
+      polkruh.setStopAngle(konci);
 
       const handleMotionInfo = document.getElementById("handleMotionInfo");
       handleMotionInfo.innerHTML = `<p>Alpha: ${device_alpha}</p><p>Beta: ${device_beta}</p><p>Gamma: ${device_gamma}</p>`;
@@ -140,6 +252,7 @@
         }
       }
     }
+
 
     if (iOS()) {
       const deviceInfo = document.getElementById("deviceInfo");
