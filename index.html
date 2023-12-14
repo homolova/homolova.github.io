@@ -137,6 +137,14 @@
         { name: 'BS_4', lon: 18.9067, lat: 48.4536 },
       ];
 
+      polkruh = L.semiCircle([0, 0], {
+        radius: 500,
+        color: 'blue',
+        startAngle: alpha - 60, 
+        stopAngle: alpha + 60
+      }).addTo(map);
+
+
       points.forEach(point => {
         L.circleMarker([point.lat, point.lon], {
           radius: 8,
@@ -152,12 +160,7 @@
       }).addTo(map);
 
 
-      polkruh = L.semiCircle([0, 0], {
-        radius: 500,
-        color: 'blue',
-        startAngle: 45, 
-        stopAngle: 135
-      }).addTo(map);
+
 
       // Watch the geolocation and update the marker
       if (navigator.geolocation) {
