@@ -117,6 +117,7 @@
 
   <script>
     var map, marker;
+    var device_alpha, device_beta, device_gamma;
 
     function initMap() {
       map = L.map('map').setView([0, 0], 18);
@@ -211,8 +212,6 @@
     }
 
     function handleMotion(event) {
-      var device_alpha, device_beta, device_gamma;
-
       device_alpha = event.alpha.toFixed(3);
       device_beta = event.beta.toFixed(3);
       device_gamma = event.gamma.toFixed(3);
