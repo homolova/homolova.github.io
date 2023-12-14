@@ -216,7 +216,7 @@
       device_gamma = event.gamma.toFixed(3);
 
       polkruh.setStartAngle(device_alpha+300);
-      // polkruh.setStopAngle(device_alpha+420);
+      polkruh.setStopAngle(device_alpha+420);
 
       const handleMotionInfo = document.getElementById("handleMotionInfo");
       handleMotionInfo.innerHTML = `<p>Alpha: ${device_alpha}</p><p>Beta: ${device_beta}</p><p>Gamma: ${device_gamma}</p>`;
