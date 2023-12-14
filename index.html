@@ -215,14 +215,11 @@
       device_beta = event.beta.toFixed(3);
       device_gamma = event.gamma.toFixed(3);
 
-      startuj = device_alpha - 90;
-      konci = device_alpha + 90;
+      startuj = parseInt(device_alpha - 60);
+      konci = parseInt(device_alpha + 60);
 
-      alert(device_alpha);
-      alert(konci);
-
-      // polkruh.setStartAngle(startuj);
-      // polkruh.setStopAngle(konci);
+      polkruh.setStartAngle(startuj);
+      polkruh.setStopAngle(konci);
 
       const handleMotionInfo = document.getElementById("handleMotionInfo");
       handleMotionInfo.innerHTML = `<p>Alpha: ${device_alpha}</p><p>Beta: ${device_beta}</p><p>Gamma: ${device_gamma}</p>`;
