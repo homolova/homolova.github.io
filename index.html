@@ -50,18 +50,20 @@
       border-radius: 5px;
     }
 
+    #notification,
     #locationInfo,
     #handleMotionInfo,
     #deviceInfo,
-    #notification,
+    #detectedPointsInfo,
     #map {
       display: none;
     }
 
+    #notification,
     #locationInfo,
     #handleMotionInfo,
     #deviceInfo,
-    #notification {
+    #detectedPointsInfo {
       padding-left: 10px;
       padding-right: 10px;
       text-align: left;
@@ -70,26 +72,32 @@
       position: fixed;
     }
 
-    #locationInfo {
-      top: 50px;
-    }
-
-    #handleMotionInfo {
-      top: 150px;
-      width: 125px;
-    }
-
-    #deviceInfo {
-      top: 290px;
-    }
 
     #notification {
       top: 20px;
       text-align: center;
       background-color: #ef9013;
-      padding: 4px;
+      padding-left: 10px;
+      padding-right: 10px;
       border-radius: 5px;
       display: none;
+    }
+
+    #locationInfo {
+      top: 50px;
+    }
+
+    #handleMotionInfo {
+      top: 100px;
+      width: 125px;
+    }
+
+    #deviceInfo {
+      top: 170px;
+    }
+
+    #detectedPointsInfo {
+      top: 200px;
     }
 
     #map {
