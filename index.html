@@ -114,7 +114,6 @@
   <script src="https://jieter.github.io/Leaflet-semicircle/Semicircle.js"></script>
 
 
-
   <script>
     var map, marker;
     var device_alpha, device_beta, device_gamma;
@@ -171,7 +170,6 @@
             marker.setLatLng([lat, lng]);
             polkruh.setLatLng([lat, lng]);
 
-
             // Update map view
             map.setView([lat, lng], 16);
 
@@ -215,8 +213,8 @@
       device_beta = event.beta.toFixed(3);
       device_gamma = event.gamma.toFixed(3);
 
-      startuj = parseInt(device_alpha) - 60;
-      konci = parseInt(device_alpha) + 60;
+      startuj = parseInt(0 - device_alpha) - 60;
+      konci = parseInt(0 - device_alpha) + 60;
 
       polkruh.setStartAngle(startuj);
       polkruh.setStopAngle(konci);
