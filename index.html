@@ -275,6 +275,9 @@
       deviceInfo.innerHTML = `<p>Android device detected</p>`;
     }
 
+    const detectedPointsInfo = document.getElementById("detectedPointsInfo");
+    detectedPointsInfo.innerHTML = `<p>Detected points:</p>`;
+
     document.getElementById('startButton').addEventListener('click', () => {
       // Display the hidden elements
       document.getElementById('welcome').style.display = 'none';
