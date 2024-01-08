@@ -54,6 +54,7 @@
     #handleMotionInfo,
     #deviceInfo,
     #notification,
+    #detectedPoints
     #map {
       display: none;
     }
@@ -61,26 +62,14 @@
     #locationInfo,
     #handleMotionInfo,
     #deviceInfo,
-    #notification {
+    #notification,
+    #detectedPoints {
       padding-left: 10px;
       padding-right: 10px;
       text-align: left;
       background-color: grey;
       border-radius: 5px;
       position: fixed;
-    }
-
-    #locationInfo {
-      top: 50px;
-    }
-
-    #handleMotionInfo {
-      top: 150px;
-      width: 125px;
-    }
-
-    #deviceInfo {
-      top: 290px;
     }
 
     #notification {
@@ -90,6 +79,23 @@
       padding: 4px;
       border-radius: 5px;
       display: none;
+    }
+
+    #locationInfo {
+      top: 50px;
+    }
+
+    #handleMotionInfo {
+      top: 80px;
+      width: 125px;
+    }
+
+    #deviceInfo {
+      top: 150px;
+    }
+
+    #detectedPoints {
+      top: 200px;
     }
 
     #map {
@@ -266,6 +272,10 @@
       const deviceInfo = document.getElementById("deviceInfo");
       deviceInfo.innerHTML = `<p>Android device detected</p>`;
     }
+
+    const detectedPoints = document.getElementById("detectedPoints");
+    deviceInfo.innerHTML = `<p>Detected points:</p>`;
+
 
     document.getElementById('startButton').addEventListener('click', () => {
       // Display the hidden elements
