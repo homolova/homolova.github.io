@@ -54,7 +54,6 @@
     #handleMotionInfo,
     #deviceInfo,
     #notification,
-    #detectedPointsInfo
     #map {
       display: none;
     }
@@ -62,8 +61,7 @@
     #locationInfo,
     #handleMotionInfo,
     #deviceInfo,
-    #notification,
-    #detectedPointsInfo {
+    #notification {
       padding-left: 10px;
       padding-right: 10px;
       text-align: left;
@@ -77,12 +75,12 @@
     }
 
     #handleMotionInfo {
-      top: 100px;
+      top: 150px;
       width: 125px;
     }
 
     #deviceInfo {
-      top: 200px;
+      top: 290px;
     }
 
     #notification {
@@ -92,10 +90,6 @@
       padding: 4px;
       border-radius: 5px;
       display: none;
-    }
-
-    #detectedPointsInfo {
-      top: 250px;
     }
 
     #map {
@@ -114,11 +108,10 @@
     <button id="startButton">START</button>
   </div>
 
-  <div id="notification" class="column"></div>
   <div id="locationInfo" class="column"></div>
   <div id="handleMotionInfo" class="column"></div>
   <div id="deviceInfo" class="column"></div>
-  <div id="detectedPointsInfo" class="column"></div>
+  <div id="notification" class="column"></div>
   <div id="map" class="column"></div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
@@ -273,10 +266,6 @@
       const deviceInfo = document.getElementById("deviceInfo");
       deviceInfo.innerHTML = `<p>Android device detected</p>`;
     }
-
-    const detectedPoints = document.getElementById("detectedPoints");
-    deviceInfo.innerHTML = `<p>Detected points:</p>`;
-
 
     document.getElementById('startButton').addEventListener('click', () => {
       // Display the hidden elements
