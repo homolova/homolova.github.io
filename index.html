@@ -21,11 +21,6 @@
       flex-direction: column;
     }
 
-    p {
-      margin-top: 4px;
-      margin-bottom: 4px;
-    }
-
     #welcome {
       text-align: center;
     }
@@ -34,10 +29,14 @@
       font-size: 40px;
     }
 
+    p {
+      margin-top: 4px;
+      margin-bottom: 4px;
+    }
+
     #welcomeText {
       margin-bottom: 70px;
       font-size: 15px;
-
     }
 
     #startButton {
@@ -127,6 +126,7 @@
   integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
   crossorigin=""></script>
   <script src="https://jieter.github.io/Leaflet-semicircle/Semicircle.js"></script>
+
 
 
   <script>
@@ -229,8 +229,8 @@
       device_gamma = event.gamma.toFixed(3);
 
       // semicircle calculation
-      startuj = parseInt(0 - device_alpha) - 60;
-      konci = parseInt(0 - device_alpha) + 60;
+      startuj = 0 - parseInt(device_alpha) - 60;
+      konci = 0 - parseInt(device_alpha) + 60;
 
       polkruh.setStartAngle(startuj);
       polkruh.setStopAngle(konci);
